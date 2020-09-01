@@ -12,7 +12,9 @@ public class MainActivity extends AppCompatActivity {
     {
         TextView textView = findViewById(R.id.textView);
 
+
         textView.setText(R.string.change);
+        textView.setText(R.string.great);
     }
 
     @Override
