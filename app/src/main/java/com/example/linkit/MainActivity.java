@@ -1,21 +1,10 @@
 package com.example.linkit;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-
-    public void changeText(View view)
-    {
-        TextView textView = findViewById(R.id.textView);
-
-
-        textView.setText(R.string.change);
-        textView.setText(R.string.great);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
