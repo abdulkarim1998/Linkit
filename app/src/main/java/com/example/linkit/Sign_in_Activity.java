@@ -6,9 +6,6 @@ import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
-
-import java.util.regex.Pattern;
 
 public class Sign_in_Activity extends AppCompatActivity {
 
@@ -27,7 +24,7 @@ public class Sign_in_Activity extends AppCompatActivity {
 
         etNickName = findViewById(R.id.nickName);
         etUserName = findViewById(R.id.username);
-        etEmail = findViewById(R.id.email);
+        etEmail = findViewById(R.id.emailText);
         etPassword = findViewById(R.id.password);
         etConfirmPassword = findViewById(R.id.confirmPassword);
 
