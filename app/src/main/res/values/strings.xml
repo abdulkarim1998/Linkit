@@ -3,11 +3,11 @@
     <string name="change">GGWPSURR@20</string>
     <string name="great">GreAT</string>
     <string name="sign_in">Sign in</string>
-    <string name="sign_in">Sign in</string>
     <string name="nickname">NickName</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="empty">Can\'t be empty</string>
     <string name="email_wrong_format">check the email format</string>
+    <string name="option_setting">setting</string>
 </resources>
