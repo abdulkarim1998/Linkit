@@ -54,6 +54,7 @@ public class Sign_in_Activity extends AppCompatActivity {
 
     private Uri localUri, serverUri;
 
+    private View progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,8 @@ public class Sign_in_Activity extends AppCompatActivity {
         etEmail = findViewById(R.id.emailText);
         etPassword = findViewById(R.id.passwordText);
         etConfirmPassword = findViewById(R.id.confirmPasswordText);
+
+        progressBar = findViewById(R.id.progressBar);
 
         profile = findViewById(R.id.profile);
 
@@ -142,9 +145,11 @@ public class Sign_in_Activity extends AppCompatActivity {
                                     .setPhotoUri(serverUri)
                                     .build();
 
+                            progressBar.setVisibility(View.VISIBLE);
                             firebaseUser.updateProfile(request).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
+                                    progressBar.setVisibility(View.GONE);
                                     if(task.isSuccessful())
                                     {
                                         String userID = firebaseUser.getUid();
@@ -187,9 +192,11 @@ public class Sign_in_Activity extends AppCompatActivity {
                 .setDisplayName(etNickName.getText().toString().trim())
                 .build();
 
+        progressBar.setVisibility(View.VISIBLE);
         firebaseUser.updateProfile(request).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                progressBar.setVisibility(View.GONE);
                 if(task.isSuccessful())
                 {
                     String userID = firebaseUser.getUid();

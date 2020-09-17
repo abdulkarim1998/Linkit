@@ -41,6 +41,8 @@ public class ProfileActivity extends AppCompatActivity {
     EditText etNickName;
     EditText etEmail;
 
+    private View progressBar;
+
     private ImageView profile;
 
     String nickName, userName, email;
@@ -62,6 +64,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         profile = findViewById(R.id.profile);
 
+        progressBar = findViewById(R.id.progressBar);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -235,9 +238,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         final StorageReference fileReference = storageReference.child("images/"+ filename);
 
+        progressBar.setVisibility(View.VISIBLE);
         fileReference.putFile(localUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                progressBar.setVisibility(View.GONE);
                 if(task.isSuccessful())
                 {
                     fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -290,9 +295,11 @@ public class ProfileActivity extends AppCompatActivity {
                 .setDisplayName(etNickName.getText().toString().trim())
                 .build();
 
+        progressBar.setVisibility(View.VISIBLE);
         firebaseUser.updateProfile(request).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                progressBar.setVisibility(View.GONE);
                 if(task.isSuccessful())
                 {
                     String userID = firebaseUser.getUid();
