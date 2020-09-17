@@ -3,6 +3,7 @@ package com.example.linkit;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -31,16 +32,16 @@ public class LoginActivity extends AppCompatActivity {
 
     public void login(View view)
     {
-        String email = etEmail.getText().toString();
-        String password = etPassword.getText().toString();
+        String email = etEmail.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
 
         if(email.equals(""))
         {
-            etEmail.setError(R.string.empty);
+            etEmail.setError(getString(R.string.empty));
         }
         else if (password.equals(""))
         {
-            etPassword.setError(R.string.empty);
+            etPassword.setError(getString(R.string.empty));
         }
         else
         {
@@ -59,7 +60,12 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Logging in failed, try again", Toast.LENGTH_SHORT).show();
                     }
                 }
-            })
+            });
         }
+    }
+
+    public void goToSignin(View view)
+    {
+        startActivity(new Intent(LoginActivity.this, Sign_in_Activity.class));
     }
 }

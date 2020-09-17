@@ -6,73 +6,79 @@
     android:layout_height="match_parent"
     tools:context=".Sign_in_Activity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="168dp"
-        android:text="@string/sign_in"
-        android:textSize="50sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/profile"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp">
+        android:src="@drawable/profile" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/colorPrimary"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:gravity="center"
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/nickName"
+                android:id="@+id/nicknameText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 android:ems="10"
-                android:inputType="textPersonName"
-                android:text=""
-                android:hint="@string/nickname"/>
+                android:hint="Enter Nickname"
+                android:inputType="textPersonName" />
 
             <EditText
                 android:id="@+id/emailText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 android:ems="10"
-                android:inputType="textPersonName"
-                android:text=""
-                android:hint="@string/email"/>
+                android:hint="Enter Email"
+                android:inputType="textPersonName" />
 
             <EditText
-                android:id="@+id/password"
+                android:id="@+id/passwordText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 android:ems="10"
-                android:inputType="textPassword"
-                android:hint="@string/password"/>
+                android:hint="Enter Password"
+                android:inputType="textPassword" />
 
             <EditText
-                android:id="@+id/confirmPassword"
+                android:id="@+id/confirmPasswordText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 android:ems="10"
-                android:inputType="textPassword"
-                android:hint="@string/confirm_password"/>
+                android:hint="@string/confirm_password"
+                android:inputType="textPassword" />
 
             <Button
-                android:id="@+id/button"
-                android:layout_width="186dp"
+                android:id="@+id/signinButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Button"
-                android:layout_marginLeft="110dp"/>
+                android:layout_marginTop="8dp"
+                android:onClick="signIn"
+                android:text="@string/sign_in" />
 
         </LinearLayout>
 
