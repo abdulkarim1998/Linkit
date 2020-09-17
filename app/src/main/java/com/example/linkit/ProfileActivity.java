@@ -11,16 +11,17 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Patterns;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -31,21 +32,18 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
-import java.util.Random;
 
-public class Sign_in_Activity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
 
     final int photoRequestCode = 22;
     final int permissionToReadExternalMemory = 69;
 
     EditText etNickName;
     EditText etEmail;
-    EditText etPassword;
-    EditText etConfirmPassword;
 
     private ImageView profile;
 
-    String nickName, userName, email, password, confirmPassword;
+    String nickName, userName, email;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
@@ -54,26 +52,136 @@ public class Sign_in_Activity extends AppCompatActivity {
 
     private Uri localUri, serverUri;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in_);
+        setContentView(R.layout.activity_profile);
 
         etNickName = findViewById(R.id.nicknameText);
         etEmail = findViewById(R.id.emailText);
-        etPassword = findViewById(R.id.passwordText);
-        etConfirmPassword = findViewById(R.id.confirmPasswordText);
 
         profile = findViewById(R.id.profile);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference();
 
+        if(firebaseUser != null)
+        {
+            etNickName.setText(firebaseUser.getDisplayName());
+            etEmail.setText(firebaseUser.getEmail());
+            serverUri = firebaseUser.getPhotoUrl();
+
+            if(serverUri != null)
+            {
+                Glide.with(this)
+                        .load(serverUri)
+                        .placeholder(R.drawable.profile)
+                        .error(R.drawable.profile)
+                        .into(profile);
+
+            }
+        }
+    }
+
+    public void saveChanges(View view)
+    {
+        if(etNickName.getText().toString().equals(""))
+        {
+            etNickName.setError(getString(R.string.empty));
+        }
+        else
+        {
+            if(localUri !=null)
+            {
+                updateNameAndPhoto();
+            }
+            else
+            {
+                updateName();
+            }
+        }
+    }
+
+    public void logout(View view)
+    {
+        FirebaseAuth f = FirebaseAuth.getInstance();
+        firebaseAuth.signOut();
+        startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
+        finish();
+    }
+
+    public void changeProfilePhoto(View view)
+    {
+        if(serverUri == null)
+        {
+            choosePhoto();
+        }
+        else
+        {
+            PopupMenu popupMenu = new PopupMenu(this,view);
+            popupMenu.getMenuInflater().inflate(R.menu.menu_picture, popupMenu.getMenu());
+
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+
+                    int choice = item.getItemId();
+                    if(choice == R.id.menu_changePhoto)
+                    {
+                        choosePhoto();
+                    }
+                    else if(choice == R.id.menu_deletePhot)
+                    {
+                        removeProfilePhoto();
+                    }
+
+                    return false;
+                }
+            });
+
+            popupMenu.show();
+        }
+    }
+
+    private void removeProfilePhoto()
+    {
+        UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
+                .setDisplayName(etNickName.getText().toString().trim())
+                .setPhotoUri(null)
+                .build();
+
+        firebaseUser.updateProfile(request).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful())
+                {
+                    String userID = firebaseUser.getUid();
+                    databaseReference = FirebaseDatabase.getInstance().getReference().child(Node.USERS);
+
+                    HashMap<String,String> hashMap = new HashMap<>();
+
+                    hashMap.put(Node.PHOTO, "");
+
+                    databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Toast.makeText(ProfileActivity.this, "Profile photo removed", Toast.LENGTH_SHORT).show();
+                            profile.setBackgroundResource(R.drawable.profile);
+                        }
+                    });
+
+                }
+                else
+                {
+                    Toast.makeText(ProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
     }
 
-    public void choosePhoto(View view)
+    private void choosePhoto()
     {
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
         {
@@ -153,16 +261,11 @@ public class Sign_in_Activity extends AppCompatActivity {
                                         HashMap<String,String> hashMap = new HashMap<>();
 
                                         hashMap.put(Node.NICKNAME, etNickName.getText().toString().trim());
-                                        hashMap.put(Node.EMAIL, etEmail.getText().toString().trim());
-                                        hashMap.put(Node.CODE, generateCode());
-                                        hashMap.put(Node.STATUS,"Online");
                                         hashMap.put(Node.PHOTO, serverUri.getPath());
 
                                         databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
-                                                Toast.makeText(Sign_in_Activity.this, "User created successfully", Toast.LENGTH_SHORT).show();
-                                                startActivity(new Intent(Sign_in_Activity.this, MainActivity2.class));
                                                 finish();
                                             }
                                         });
@@ -170,7 +273,7 @@ public class Sign_in_Activity extends AppCompatActivity {
                                     }
                                     else
                                     {
-                                        Toast.makeText(Sign_in_Activity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
@@ -198,16 +301,10 @@ public class Sign_in_Activity extends AppCompatActivity {
                     HashMap<String,String> hashMap = new HashMap<>();
 
                     hashMap.put(Node.NICKNAME, etNickName.getText().toString().trim());
-                    hashMap.put(Node.EMAIL, etEmail.getText().toString().trim());
-                    hashMap.put(Node.CODE, generateCode());
-                    hashMap.put(Node.STATUS,"Online");
-                    hashMap.put(Node.PHOTO, "");
 
                     databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            Toast.makeText(Sign_in_Activity.this, "User created successfully", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(Sign_in_Activity.this, MainActivity2.class));
                             finish();
                         }
                     });
@@ -215,89 +312,10 @@ public class Sign_in_Activity extends AppCompatActivity {
                 }
                 else
                 {
-                    Toast.makeText(Sign_in_Activity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
-    }
-
-
-
-
-    public void signIn(View view)
-    {
-        nickName = etNickName.getText().toString().trim();
-        email = etEmail.getText().toString().trim();
-        password = etPassword.getText().toString().trim();
-        confirmPassword = etConfirmPassword.getText().toString().trim();
-
-        if(nickName.equals(""))
-        {
-            etNickName.setError(getString(R.string.empty));
-        }
-        else if(email.equals(""))
-        {
-            etEmail.setError(getString(R.string.empty));
-        }
-        else if(password.equals(""))
-        {
-            etPassword.setError(getString(R.string.empty));
-        }
-        else if(confirmPassword.equals(""))
-        {
-            etConfirmPassword.setError(getString(R.string.empty));
-        }
-        else if(!password.equals(confirmPassword))
-        {
-            etConfirmPassword.setError("Confirm password must be the same as password");
-        }
-        else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches())
-        {
-            etEmail.setError(getString(R.string.email_wrong_format));
-        }
-        else
-        {
-            firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-
-                    if(task.isSuccessful())
-                    {
-                        firebaseUser = firebaseAuth.getCurrentUser();
-
-                        if(localUri != null)
-                        {
-                            updateNameAndPhoto();
-                        }
-                        else {
-                            updateName();
-                        }
-                    }
-                    else
-                    {
-                        Toast.makeText(Sign_in_Activity.this, "Something went wrong" + task.getException()  , Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        }
-
-    }
-
-    private String generateCode()
-    {
-        Random random = new Random();
-        char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-        String code = "";
-        code+= chars[random.nextInt(25)];
-        code+= chars[random.nextInt(25)];
-        code+= chars[random.nextInt(25)];
-        code+= random.nextInt(9);
-        code+= random.nextInt(9);
-        code+= random.nextInt(9);
-
-        return code;
-
 
     }
 }
