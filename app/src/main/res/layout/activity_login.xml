@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
+    <include
+        layout="@layout/customized_progressbar"
+        android:id="@+id/progressBar"
+        android:visibility="gone"/>
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="120dp"
@@ -56,7 +61,7 @@
                 android:inputType="textPassword" />
 
             <Button
-                android:id="@+id/signinButton"
+                android:id="@+id/changePasswordButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"

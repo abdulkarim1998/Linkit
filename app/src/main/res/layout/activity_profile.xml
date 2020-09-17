@@ -56,12 +56,22 @@
                 android:inputType="textPersonName" />
 
             <Button
-                android:id="@+id/signinButton"
+                android:id="@+id/changePasswordButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:onClick="saveChanges"
                 android:text="Save" />
+
+            <TextView
+                android:id="@+id/changePasswordText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:onClick="changePasswordbtn"
+                android:text="Change Password"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorPrimaryDark" />
 
         </LinearLayout>
 

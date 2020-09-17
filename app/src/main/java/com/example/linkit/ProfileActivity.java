@@ -318,4 +318,9 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
     }
+
+    public void changePasswordbtn(View view)
+    {
+        startActivity(new Intent(ProfileActivity.this, ChangePasswordActivity.class));
+    }
 }
