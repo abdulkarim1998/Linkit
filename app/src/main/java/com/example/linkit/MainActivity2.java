@@ -84,6 +84,8 @@ public class MainActivity2 extends AppCompatActivity {
                         break;
                     case 2:
                         tab.setCustomView(R.layout.tab_find_friends);
+
+
                         break;
                 }
             }
