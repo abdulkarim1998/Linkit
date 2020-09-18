@@ -14,14 +14,18 @@
         <activity android:name=".ChangePasswordActivity"></activity>
         <activity android:name=".MainActivity2" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".LoginActivity" />
         <activity android:name=".Sign_in_Activity" />
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".LoginActivity" >
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+
+        <activity android:name=".MainActivity">
+
         </activity>
 
         <meta-data
