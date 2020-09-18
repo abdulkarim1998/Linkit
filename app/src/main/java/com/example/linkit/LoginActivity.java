@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -76,5 +77,18 @@ public class LoginActivity extends AppCompatActivity {
     public void goToSignin(View view)
     {
         startActivity(new Intent(LoginActivity.this, Sign_in_Activity.class));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseAuth f = FirebaseAuth.getInstance();
+        FirebaseUser u = f.getCurrentUser();
+
+        if(u != null)
+        {
+            startActivity(new Intent(LoginActivity.this, MainActivity2.class));
+        }
     }
 }
