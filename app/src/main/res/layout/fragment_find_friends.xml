@@ -7,6 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".ChatFragment">
 
+    <include
+        layout="@layout/customized_progressbar"
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+        />
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
