@@ -11,9 +11,11 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -22,6 +24,8 @@ public class MainActivity2 extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
+
+    private boolean doubleBackPressed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +88,6 @@ public class MainActivity2 extends AppCompatActivity {
                         break;
                     case 2:
                         tab.setCustomView(R.layout.tab_find_friends);
-
-
                         break;
                 }
             }
@@ -116,5 +118,36 @@ public class MainActivity2 extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+
+        if(tabLayout.getSelectedTabPosition() > 0)
+        {
+            tabLayout.selectTab(tabLayout.getTabAt(0));
+        }
+        else
+        {
+            if(doubleBackPressed)
+            {
+                finishAffinity();
+            }
+            else
+            {
+                doubleBackPressed = true;
+                Toast.makeText(this, "press back again to quit", Toast.LENGTH_SHORT).show();
+
+                android.os.Handler handler = new Handler();
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        doubleBackPressed = false;
+                    }
+                }, 2000);
+            }
+        }
     }
 }

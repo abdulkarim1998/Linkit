@@ -26,7 +26,7 @@
         android:fontFamily="@font/aclonica"
         android:text="Request"
         android:textColor="#FFFFFF"
-        android:textSize="18sp"
+        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toTopOf="parent" />
