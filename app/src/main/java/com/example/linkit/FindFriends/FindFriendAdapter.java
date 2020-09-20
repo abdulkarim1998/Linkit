@@ -139,6 +139,60 @@ public class FindFriendAdapter extends RecyclerView.Adapter<FindFriendAdapter.Fi
             }
         });
 
+        holder.cancelRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.cancelRequest.setVisibility(View.GONE);
+                holder.progressBar.setVisibility(View.VISIBLE);
+
+                userID = f.getUserId();
+
+                databaseReference.child(user.getUid()).child(userID).child(Node.REQUEST_TYPE)
+                        .setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful())
+                        {
+                            databaseReference.child(userID).child(user.getUid()).child(Node.REQUEST_TYPE)
+                                    .setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful())
+                                    {
+                                        Toast.makeText(context, "Request cancelled successfully", Toast.LENGTH_SHORT).show();
+
+                                        holder.sendRequest.setVisibility(View.VISIBLE);
+                                        holder.progressBar.setVisibility(View.GONE);
+                                        holder.cancelRequest.setVisibility(View.GONE);
+
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(context, "Request cancellation failed, try again", Toast.LENGTH_SHORT).show();
+
+                                        holder.sendRequest.setVisibility(View.GONE);
+                                        holder.progressBar.setVisibility(View.GONE);
+                                        holder.cancelRequest.setVisibility(View.VISIBLE);
+
+                                    }
+                                }
+                            });
+                        }
+                        else
+                        {
+                            Toast.makeText(context, "Request cancellation failed, try again", Toast.LENGTH_SHORT).show();
+
+                            holder.sendRequest.setVisibility(View.GONE);
+                            holder.progressBar.setVisibility(View.GONE);
+                            holder.cancelRequest.setVisibility(View.VISIBLE);
+
+                        }
+                    }
+                });
+
+            }
+        });
+
     }
 
     @Override
