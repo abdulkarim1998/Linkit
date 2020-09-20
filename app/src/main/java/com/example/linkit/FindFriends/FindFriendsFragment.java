@@ -43,6 +43,7 @@ public class FindFriendsFragment extends Fragment {
     private TextView textView;
 
     private DatabaseReference databaseReference;
+    private DatabaseReference databaseReferenceFriendRequest;
     private FirebaseUser user;
 
     private View progressBar;
@@ -110,6 +111,7 @@ public class FindFriendsFragment extends Fragment {
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child(Node.USERS);
         user = FirebaseAuth.getInstance().getCurrentUser();
+        databaseReferenceFriendRequest = FirebaseDatabase.getInstance().getReference().child(Node.FRIEND_REQUEST).child(user.getUid());
 
         textView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
@@ -123,21 +125,44 @@ public class FindFriendsFragment extends Fragment {
 
                 for (DataSnapshot ds: dataSnapshot.getChildren())
                 {
-                    String userID = ds.getKey();
+                    final String userID = ds.getKey();
                     if(userID.equals(user.getUid()))
                     {
                         continue;
                     }
                     if (ds.child(Node.NICKNAME).getValue() != null)
                     {
-                        String name = ds.child(Node.NICKNAME).getValue().toString();
+                        final String name = ds.child(Node.NICKNAME).getValue().toString();
                         String photo = "";
                         if(ds.child(Node.PHOTO).getValue() != null) {
                             photo = ds.child(Node.PHOTO).getValue().toString();
                         }
 
-                        findFriendModels.add(new FindFriendModel(name, photo, userID, false));
-                        adapter.notifyDataSetChanged();
+                        final String finalPhoto = photo;
+                        databaseReferenceFriendRequest.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.exists())
+                                {
+                                    String requestType = dataSnapshot.child(Node.REQUEST_TYPE).getValue().toString();
+                                    if(requestType.equals("sent"))
+                                    {
+                                        findFriendModels.add(new FindFriendModel(name, finalPhoto, userID, true));
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                }
+                                else
+                                {
+                                    findFriendModels.add(new FindFriendModel(name, finalPhoto, userID, false));
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
 
                         textView.setVisibility(View.GONE);
                         progressBar.setVisibility(View.GONE);

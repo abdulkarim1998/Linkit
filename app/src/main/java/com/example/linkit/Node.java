@@ -3,7 +3,7 @@ package com.example.linkit;
 public class Node {
 
     public static final String USERS = "Users";
-    public static final String Friend_request = "FriendRequest";
+    public static final String FRIEND_REQUEST = "FriendRequest";
 
     public static final String REQUEST_TYPE = "Request Type";
 
