@@ -76,29 +76,90 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
 
         databaseReferenceFriendRequest = FirebaseDatabase.getInstance().getReference().child(Node.FRIEND_REQUEST);
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        /*databaseReferenceChat = FirebaseDatabase.getInstance().getReference().child(Node.CHATS);
+        databaseReferenceChat = FirebaseDatabase.getInstance().getReference().child(Node.CHATS);
+        final String REQUEST_STATUS = "accepted";
 
         holder.acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 holder.progressBar.setVisibility(View.VISIBLE);
-                holder.declineButton.setVisibility(view.GONE);
-                holder.acceptButton.setVisibility(view.GONE);
+                holder.declineButton.setVisibility(View.GONE);
+                holder.acceptButton.setVisibility(View.GONE);
 
-                databaseReferenceFriendRequest.child(currentUser.getUid()).child(requestModel.getUserID()).child(Node.TIME_STAMP).setValue(ServerValue.TIMESTAMP);
-                databaseReferenceFriendRequest.child(requestModel.getUserID()).child(currentUser.getUid()).child(Node.TIME_STAMP).setValue(ServerValue.TIMESTAMP);
+                databaseReferenceChat.child(currentUser.getUid()).child(requestModel.getUserID()).child(Node.TIME_STAMP)
+                        .setValue(ServerValue.TIMESTAMP).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            databaseReferenceChat.child(requestModel.getUserID()).child(currentUser.getUid()).child(Node.TIME_STAMP)
+                                    .setValue(ServerValue.TIMESTAMP).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()){
+                                        databaseReferenceFriendRequest.child(currentUser.getUid()).child(requestModel.getUserID()).child(Node.REQUEST_TYPE)
+                                                .setValue(REQUEST_STATUS).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()){
+                                                    databaseReferenceFriendRequest.child(requestModel.getUserID()).child(currentUser.getUid())
+                                                            .child(Node.REQUEST_TYPE).setValue(REQUEST_STATUS).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if(task.isSuccessful()) {
+                                                                Toast.makeText(context, context.getString(R.string.accepted_successfully), Toast.LENGTH_SHORT).show();
+                                                                holder.progressBar.setVisibility(View.GONE);
+                                                                holder.declineButton.setVisibility(View.VISIBLE);
+                                                                holder.acceptButton.setVisibility(View.VISIBLE);
 
-                databaseReferenceFriendRequest.child(currentUser.getUid()).child(requestModel.getUserID()).child(Node.REQUEST_TYPE).setValue();
-                databaseReferenceFriendRequest.child(requestModel.getUserID()).child(currentUser.getUid()).child(Node.REQUEST_TYPE).setValue();
+                                                            }
+                                                            else {
+                                                                Toast.makeText(context, context.getString(R.string.fail_to_accept), Toast.LENGTH_SHORT).show();
+                                                                holder.progressBar.setVisibility(View.GONE);
+                                                                holder.declineButton.setVisibility(View.VISIBLE);
+                                                                holder.acceptButton.setVisibility(View.VISIBLE);
+                                                            }
+                                                        }
+                                                    });
+
+                                                }
+                                                else{
+                                                    Toast.makeText(context, context.getString(R.string.fail_to_accept), Toast.LENGTH_SHORT).show();
+                                                    holder.progressBar.setVisibility(View.GONE);
+                                                    holder.declineButton.setVisibility(View.VISIBLE);
+                                                    holder.acceptButton.setVisibility(View.VISIBLE);
+                                                }
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        Toast.makeText(context, context.getString(R.string.fail_to_accept), Toast.LENGTH_SHORT).show();
+                                        holder.progressBar.setVisibility(View.GONE);
+                                        holder.declineButton.setVisibility(View.VISIBLE);
+                                        holder.acceptButton.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            });
+
+
+                        }
+                        else{
+                            Toast.makeText(context, context.getString(R.string.fail_to_accept), Toast.LENGTH_SHORT).show();
+                            holder.progressBar.setVisibility(View.GONE);
+                            holder.declineButton.setVisibility(View.VISIBLE);
+                            holder.acceptButton.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+
             }
-        });*/
+        });
         holder.declineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
 
                 holder.progressBar.setVisibility(View.VISIBLE);
-                holder.declineButton.setVisibility(view.GONE);
-                holder.acceptButton.setVisibility(view.GONE);
+                holder.declineButton.setVisibility(View.GONE);
+                holder.acceptButton.setVisibility(View.GONE);
 
                 databaseReferenceFriendRequest.child(currentUser.getUid()).child(requestModel.getUserID()).child(Node.REQUEST_TYPE)
                         .setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -111,24 +172,24 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
                                         Toast.makeText(context, context.getString(R.string.request_declined_successfully), Toast.LENGTH_SHORT).show();
-                                        holder.progressBar.setVisibility(view.GONE );
-                                        holder.declineButton.setVisibility(view.VISIBLE);
-                                        holder.acceptButton.setVisibility(view.VISIBLE);
+                                        holder.progressBar.setVisibility(View.GONE );
+                                        holder.declineButton.setVisibility(View.VISIBLE);
+                                        holder.acceptButton.setVisibility(View.VISIBLE);
                                     }
                                     else {
                                         Toast.makeText(context, context.getString(R.string.fail_to_decline), Toast.LENGTH_SHORT).show();
-                                        holder.progressBar.setVisibility(view.GONE );
-                                        holder.declineButton.setVisibility(view.VISIBLE);
-                                        holder.acceptButton.setVisibility(view.VISIBLE);
+                                        holder.progressBar.setVisibility(View.GONE );
+                                        holder.declineButton.setVisibility(View.VISIBLE);
+                                        holder.acceptButton.setVisibility(View.VISIBLE);
                                     }
                                 }
                             });
                         }
                         else {
                             Toast.makeText(context, context.getString(R.string.fail_to_decline), Toast.LENGTH_SHORT).show();
-                            holder.progressBar.setVisibility(view.GONE );
-                            holder.declineButton.setVisibility(view.VISIBLE);
-                            holder.acceptButton.setVisibility(view.VISIBLE);
+                            holder.progressBar.setVisibility(View.GONE );
+                            holder.declineButton.setVisibility(View.VISIBLE);
+                            holder.acceptButton.setVisibility(View.VISIBLE);
                         }
 
                     }

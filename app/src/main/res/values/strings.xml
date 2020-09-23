@@ -14,4 +14,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="fail_to_decline">failed to decline</string>
     <string name="request_declined_successfully">request declined successfully</string>
+    <string name="fail_to_accept">fail to accept</string>
+    <string name="accepted_successfully">accepted successfully</string>
 </resources>
