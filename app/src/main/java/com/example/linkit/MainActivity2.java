@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.linkit.Chat.ChatFragment;
 import com.example.linkit.FindFriends.FindFriendsFragment;
 import com.example.linkit.Request.RequestFragment;
 import com.google.android.material.tabs.TabLayout;
