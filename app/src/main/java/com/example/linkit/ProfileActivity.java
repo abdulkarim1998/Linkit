@@ -25,8 +25,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -159,18 +162,38 @@ public class ProfileActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful())
                 {
-                    String userID = firebaseUser.getUid();
+                    final String userID = firebaseUser.getUid();
                     databaseReference = FirebaseDatabase.getInstance().getReference().child(Node.USERS);
 
-                    HashMap<String,String> hashMap = new HashMap<>();
-
-                    hashMap.put(Node.PHOTO, "");
-
-                    databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    databaseReference.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Toast.makeText(ProfileActivity.this, "Profile photo removed", Toast.LENGTH_SHORT).show();
-                            profile.setBackgroundResource(R.drawable.profile);
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            String previousEmail = dataSnapshot.child(Node.EMAIL).getValue().toString();
+                            String previousCode = dataSnapshot.child(Node.CODE).getValue().toString();
+                            String previousStatus = dataSnapshot.child(Node.STATUS).getValue().toString();
+
+                            HashMap<String,String> hashMap = new HashMap<>();
+
+                            hashMap.put(Node.NICKNAME, etNickName.getText().toString().trim());
+                            hashMap.put(Node.EMAIL, previousEmail);
+                            hashMap.put(Node.CODE, previousCode);
+                            hashMap.put(Node.STATUS,previousStatus);
+                            hashMap.put(Node.PHOTO, "");
+
+
+                            databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    finish();
+                                }
+                            });
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
                         }
                     });
 
@@ -260,18 +283,37 @@ public class ProfileActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful())
                                     {
-                                        String userID = firebaseUser.getUid();
+                                        final String userID = firebaseUser.getUid();
                                         databaseReference = FirebaseDatabase.getInstance().getReference().child(Node.USERS);
 
-                                        HashMap<String,String> hashMap = new HashMap<>();
-
-                                        hashMap.put(Node.NICKNAME, etNickName.getText().toString().trim());
-                                        hashMap.put(Node.PHOTO, serverUri.getPath());
-
-                                        databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        databaseReference.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                finish();
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                                String previousEmail = dataSnapshot.child(Node.EMAIL).getValue().toString();
+                                                String previousCode = dataSnapshot.child(Node.CODE).getValue().toString();
+                                                String previousStatus = dataSnapshot.child(Node.STATUS).getValue().toString();
+
+                                                HashMap<String,String> hashMap = new HashMap<>();
+
+                                                hashMap.put(Node.NICKNAME, etNickName.getText().toString().trim());
+                                                hashMap.put(Node.EMAIL, previousEmail);
+                                                hashMap.put(Node.CODE, previousCode);
+                                                hashMap.put(Node.STATUS,previousStatus);
+                                                hashMap.put(Node.PHOTO, serverUri.getPath());
+
+                                                databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        finish();
+                                                    }
+                                                });
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
                                             }
                                         });
 
@@ -302,19 +344,42 @@ public class ProfileActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 if(task.isSuccessful())
                 {
-                    String userID = firebaseUser.getUid();
+                    final String userID = firebaseUser.getUid();
                     databaseReference = FirebaseDatabase.getInstance().getReference().child(Node.USERS);
 
-                    HashMap<String,String> hashMap = new HashMap<>();
-
-                    hashMap.put(Node.NICKNAME, etNickName.getText().toString().trim());
-
-                    databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    databaseReference.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            finish();
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            String previousEmail = dataSnapshot.child(Node.EMAIL).getValue().toString();
+                            String previousCode = dataSnapshot.child(Node.CODE).getValue().toString();
+                            String previousStatus = dataSnapshot.child(Node.STATUS).getValue().toString();
+                            String previousPhoto = dataSnapshot.child(Node.PHOTO).getValue().toString();
+
+                            HashMap<String,String> hashMap = new HashMap<>();
+
+                            hashMap.put(Node.NICKNAME, etNickName.getText().toString().trim());
+                            hashMap.put(Node.EMAIL, previousEmail);
+                            hashMap.put(Node.CODE, previousCode);
+                            hashMap.put(Node.STATUS,previousStatus);
+                            hashMap.put(Node.PHOTO, previousPhoto);
+
+
+                            databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    finish();
+                                }
+                            });
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
                         }
                     });
+
 
                 }
                 else
