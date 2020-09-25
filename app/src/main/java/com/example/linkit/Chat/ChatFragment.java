@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.linkit.Node;
 import com.example.linkit.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -116,8 +117,9 @@ public class ChatFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
         databaseReferenceUsers = FirebaseDatabase.getInstance().getReference().child(Node.USERS);
-        databaseReferenceChats = FirebaseDatabase.getInstance().getReference().child(Node.CHATS);
+        databaseReferenceChats = FirebaseDatabase.getInstance().getReference().child(Node.CHATS).child(user.getUid());
 
         query = databaseReferenceChats.orderByChild(Node.TIME_STAMP);
 
@@ -125,12 +127,12 @@ public class ChatFragment extends Fragment {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
+                updateList(dataSnapshot, true, dataSnapshot.getKey());
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                updateList(dataSnapshot, true, dataSnapshot.getKey());
             }
 
             @Override
@@ -168,7 +170,7 @@ public class ChatFragment extends Fragment {
         databaseReferenceUsers.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (userID != user.getUid()) {
+                if (!userID.equals(user.getUid())) {
                     String username = dataSnapshot.child(Node.NICKNAME).getValue() != null ?
                             dataSnapshot.child(Node.NICKNAME).getValue().toString() : "";
 
