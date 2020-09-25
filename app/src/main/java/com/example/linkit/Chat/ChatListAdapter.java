@@ -1,6 +1,7 @@
 package com.example.linkit.Chat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.linkit.ChatActivity;
 import com.example.linkit.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -40,7 +42,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 
     @Override
     public void onBindViewHolder(@NonNull final ChatListViewHolder holder, int position) {
-        ChatListModel chatListModel = chatListModels.get(position);
+        final ChatListModel chatListModel = chatListModels.get(position);
 
         holder.username.setText(chatListModel.getUsername());
         StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images/"+ chatListModel.getPhotoName());
@@ -52,6 +54,15 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
                         .placeholder(R.drawable.profile)
                         .error(R.drawable.profile)
                         .into(holder.profile);
+            }
+        });
+
+        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra("user_id", chatListModel.getUserId());
+                context.startActivity(intent);
             }
         });
 

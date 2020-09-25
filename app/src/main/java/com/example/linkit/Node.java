@@ -5,6 +5,7 @@ public class Node {
     public static final String USERS = "Users";
     public static final String FRIEND_REQUEST = "FriendRequest";
     public static final String CHATS = "Chats";
+    public static final String MESSAGES = "Messages";
 
     public static final String REQUEST_TYPE = "Request Type";
 
@@ -16,4 +17,12 @@ public class Node {
 
 
     public static final String TIME_STAMP = "TimeStamp";
+
+
+    public static final String MESSAGE_ID = "MessageID";
+    public static final String MESSAGE = "Message";
+    public static final String MESSAGE_TYPE = "MessageType";
+    public static final String MESSAGE_FROM = "From";
+    public static final String MESSAGE_TIME = "MessageTime";
+
 }
