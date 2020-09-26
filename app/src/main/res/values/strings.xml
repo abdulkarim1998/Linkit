@@ -17,4 +17,5 @@
     <string name="fail_to_accept">fail to accept</string>
     <string name="accepted_successfully">accepted successfully</string>
     <string name="user_name">user name</string>
+    <string name="user_name_action_bar">User Name</string>
 </resources>

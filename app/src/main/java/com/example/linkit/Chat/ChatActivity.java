@@ -109,7 +109,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
-
     private void createMessage(String msg, String msgType, String msgID) {
         try {
 
