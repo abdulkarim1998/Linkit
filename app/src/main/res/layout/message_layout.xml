@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/msgConstraint"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/llSent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/sent_message_background"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/messageSent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="all"
+
+            android:padding="12dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColorLink="@color/colorAccent"
+            android:visibility="visible"
+            tools:text="Hello, who are you" />
+
+        <TextView
+            android:id="@+id/sentTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginRight="4dp"
+            android:textSize="12sp"
+            tools:text="9:00" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llReceive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/receive_message_background"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/llSent">
+
+        <TextView
+            android:id="@+id/messageReceive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="all"
+            android:padding="12dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@android:color/white"
+            android:textColorLink="@color/colorAccent"
+            tools:text="Hello, who are you" />
+
+        <TextView
+            android:id="@+id/receiveTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginRight="4dp"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            tools:text="9:00" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,10 +19,10 @@ public class Node {
     public static final String TIME_STAMP = "TimeStamp";
 
 
-    public static final String MESSAGE_ID = "MessageID";
-    public static final String MESSAGE = "Message";
-    public static final String MESSAGE_TYPE = "MessageType";
-    public static final String MESSAGE_FROM = "From";
-    public static final String MESSAGE_TIME = "MessageTime";
+    public static final String MESSAGE_ID = "messageID";
+    public static final String MESSAGE = "message";
+    public static final String MESSAGE_TYPE = "messageType";
+    public static final String MESSAGE_FROM = "from";
+    public static final String MESSAGE_TIME = "messageTime";
 
 }

@@ -1,6 +1,5 @@
 package com.example.linkit.FindFriends;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -99,7 +98,7 @@ public class FindFriendsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.rvMessages);
         progressBar = view.findViewById(R.id.progressBar);
         textView = view.findViewById(R.id.emptyChatList);
 
