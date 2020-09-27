@@ -23,7 +23,7 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
     private Context context;
     private List<MessageModel> messageModels;
     private FirebaseAuth firebaseAuth;
-
+    //private ActionMode actionMode;
     public MessagedAdapter(Context context, List<MessageModel> messageModels) {
         this.context = context;
         this.messageModels = messageModels;
@@ -95,4 +95,6 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
 
         }
     }
+
+
 }
