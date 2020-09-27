@@ -2,6 +2,7 @@ package com.example.linkit.Chat;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,15 +11,25 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.linkit.Node;
 import com.example.linkit.R;
+import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.google.android.gms.common.internal.Constants;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -27,14 +38,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.example.linkit.Chat.Extras.USER_KEY;
+import static com.example.linkit.Chat.Extras.USER_NAME;
+
 public class ChatActivity extends AppCompatActivity {
 
-    private ImageView sentBtn;
+    private ImageView sentBtn, profilePhoto;
+    private TextView tvUserName;
     private ImageView attachBtn;
     private EditText typingSpace;
 
@@ -54,6 +71,7 @@ public class ChatActivity extends AppCompatActivity {
     private DatabaseReference databaseReferenceMessaged;
     private ChildEventListener childEventListener;
 
+    private String user_name, user_photo;
 
 
     @Override
@@ -63,14 +81,35 @@ public class ChatActivity extends AppCompatActivity {
 
         typingSpace = findViewById(R.id.typingSpace);
         sentBtn = findViewById(R.id.sendingBtn);
+        profilePhoto = (ImageView) findViewById(R.id.profilePhoto);
+        tvUserName = (TextView) findViewById(R.id.tvUserName);
 
         firebaseAuth = FirebaseAuth.getInstance();
         rootRef = FirebaseDatabase.getInstance().getReference();
         currentUserID = firebaseAuth.getCurrentUser().getUid();
 
-        if(getIntent().hasExtra("user_id"))
+        if(getIntent().hasExtra(Extras.USER_KEY))
         {
-            chatUserID = getIntent().getStringExtra("user_id");
+            chatUserID = getIntent().getStringExtra(Extras.USER_KEY);
+        }
+
+        if(getIntent().hasExtra(Extras.USER_NAME)) {
+            user_name = getIntent().getStringExtra(Extras.USER_NAME);
+        }
+        if(getIntent().hasExtra(Extras.USER_PHOTO)) {
+            user_photo = getIntent().getStringExtra(Extras.USER_PHOTO);
+        }
+
+        //tvUserName.setText(user_name);
+        if(!TextUtils.isEmpty(user_photo)) {
+            StorageReference photoReference = FirebaseStorage.getInstance().getReference().child("images").child(user_photo);
+            photoReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(ChatActivity.this).load(uri).placeholder(R.drawable.profile).error(R.drawable.profile).into(profilePhoto);
+
+                }
+            });
         }
 
         recyclerView = findViewById(R.id.rvMessages);
@@ -92,6 +131,21 @@ public class ChatActivity extends AppCompatActivity {
                 loadMessages();
             }
         });
+
+        ActionBar actionbar = getSupportActionBar();
+        if(actionbar!= null){
+            actionbar.setTitle("");
+            ViewGroup actionbarLayout = (ViewGroup) getLayoutInflater().inflate(R.layout.actionbar, null);
+            actionbar.setDisplayHomeAsUpEnabled(true);
+            actionbar.setHomeButtonEnabled(true);
+            actionbar.setElevation(0);
+            actionbar.setCustomView(actionbarLayout);
+            actionbar.setDisplayOptions(actionbar.getDisplayOptions()|actionbar.DISPLAY_SHOW_CUSTOM);
+
+        }
+
+
+
 
     }
 
@@ -237,8 +291,16 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
+        if(item.getItemId() == android.R.id.home)
+        {
+            finish();
+        }
 
+        return super.onOptionsItemSelected(item) ;
+    }
 
     private boolean haveNetworkConnection() {
         boolean haveConnectedWifi = false;
