@@ -81,8 +81,7 @@ public class ChatActivity extends AppCompatActivity {
 
         typingSpace = findViewById(R.id.typingSpace);
         sentBtn = findViewById(R.id.sendingBtn);
-        profilePhoto = (ImageView) findViewById(R.id.profilePhoto);
-        tvUserName = (TextView) findViewById(R.id.tvUserName);
+
 
         firebaseAuth = FirebaseAuth.getInstance();
         rootRef = FirebaseDatabase.getInstance().getReference();
@@ -92,7 +91,6 @@ public class ChatActivity extends AppCompatActivity {
         {
             chatUserID = getIntent().getStringExtra(Extras.USER_KEY);
         }
-
         if(getIntent().hasExtra(Extras.USER_NAME)) {
             user_name = getIntent().getStringExtra(Extras.USER_NAME);
         }
@@ -100,17 +98,6 @@ public class ChatActivity extends AppCompatActivity {
             user_photo = getIntent().getStringExtra(Extras.USER_PHOTO);
         }
 
-        //tvUserName.setText(user_name);
-        if(!TextUtils.isEmpty(user_photo)) {
-            StorageReference photoReference = FirebaseStorage.getInstance().getReference().child("images").child(user_photo);
-            photoReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Glide.with(ChatActivity.this).load(uri).placeholder(R.drawable.profile).error(R.drawable.profile).into(profilePhoto);
-
-                }
-            });
-        }
 
         recyclerView = findViewById(R.id.rvMessages);
         swipeRefreshLayout = findViewById(R.id.rLayout);
@@ -142,6 +129,21 @@ public class ChatActivity extends AppCompatActivity {
             actionbar.setCustomView(actionbarLayout);
             actionbar.setDisplayOptions(actionbar.getDisplayOptions()|actionbar.DISPLAY_SHOW_CUSTOM);
 
+        }
+
+        profilePhoto = findViewById(R.id.profilePhoto);
+        tvUserName = (TextView) findViewById(R.id.tvUserName);
+
+        tvUserName.setText(user_name);
+        if(!TextUtils.isEmpty(user_photo)) {
+            StorageReference photoReference = FirebaseStorage.getInstance().getReference().child("images").child(user_photo);
+            photoReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(ChatActivity.this).load(uri).placeholder(R.drawable.profile).error(R.drawable.profile).into(profilePhoto);
+
+                }
+            });
         }
 
 
