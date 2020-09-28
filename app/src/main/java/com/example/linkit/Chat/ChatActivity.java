@@ -140,7 +140,11 @@ public class ChatActivity extends AppCompatActivity {
             photoReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
-                    Glide.with(ChatActivity.this).load(uri).placeholder(R.drawable.profile).error(R.drawable.profile).into(profilePhoto);
+                    Glide.with(ChatActivity.this)
+                            .load(uri)
+                            .placeholder(R.drawable.profile)
+                            .error(R.drawable.profile)
+                            .into(profilePhoto);
 
                 }
             });
@@ -167,8 +171,6 @@ public class ChatActivity extends AppCompatActivity {
 
     private void createMessage(String msg, String msgType, String msgID) {
         try {
-
-
             if (!msg.equals("")) {
                 HashMap hashMap = new HashMap<>();
                 hashMap.put(Node.MESSAGE_ID, msgID);
@@ -221,6 +223,7 @@ public class ChatActivity extends AppCompatActivity {
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
                     MessageModel messageModel = dataSnapshot.getValue(MessageModel.class);
+                    Log.i("chat", messageModel.getMessage());
 
                     messageModels.add(messageModel);
                     adapter.notifyDataSetChanged();
@@ -254,7 +257,6 @@ public class ChatActivity extends AppCompatActivity {
         }
         else
         {
-            Log.i("HERE", "reached");
             childEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {

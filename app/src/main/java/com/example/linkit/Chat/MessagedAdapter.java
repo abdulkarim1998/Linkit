@@ -1,6 +1,7 @@
 package com.example.linkit.Chat;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,7 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
 
         if(fromUserID.equals(currentUserID))
         {
+            Log.i("here", messageModel.getFrom());
             holder.llSent.setVisibility(View.VISIBLE);
             holder.llReceived.setVisibility(View.GONE);
 
@@ -87,7 +89,6 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
             sentMessage = itemView.findViewById(R.id.messageSent);
             receivedMessage = itemView.findViewById(R.id.messageReceive);
             sentTime = itemView.findViewById(R.id.sentTime);
-            sentMessage = itemView.findViewById(R.id.sentTime);
             receiveTime = itemView.findViewById(R.id.receiveTime);
 
             constraintLayout = itemView.findViewById(R.id.msgConstraint);

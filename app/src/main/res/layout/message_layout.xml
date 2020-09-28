@@ -28,7 +28,6 @@
             android:padding="12dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColorLink="@color/colorAccent"
-            android:visibility="visible"
             tools:text="Hello, who are you" />
 
         <TextView
