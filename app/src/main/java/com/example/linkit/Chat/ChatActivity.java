@@ -36,7 +36,6 @@ import com.bumptech.glide.Glide;
 import com.example.linkit.Node;
 import com.example.linkit.R;
 import com.google.android.gms.auth.api.signin.internal.Storage;
-import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,6 +49,7 @@ import com.google.firebase.database.ServerValue;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -418,19 +418,50 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             if(requestCode == REQUEST_CAPTURE_IMAGE)
             {
                 Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100,bytes);
+
+                uploadBytes(bytes, Constants.MESSAGE_TYPE_IMAGE);
             }
             else if (requestCode == REQUEST_PICK_IMAGE)
             {
                 Uri uri = data.getData();
+                uploadfile(uri, Constants.MESSAGE_TYPE_IMAGE);
             }
             else if (requestCode == REQUEST_PICK_VIDEO)
             {
                 Uri uri = data.getData();
+                uploadfile(uri, Constants.MESSAGE_TYPE_VIDEO);
             }
         }
     }
-}
+
     private void uploadfile(Uri uri, String messageType)
     {
 
+        DatabaseReference databaseReference = mRootRef.child(NodeNames.MESSAGES).child(currentUserID).child(chatUserID).push();
+        String pushId = databaseReference.getKey();
+
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        String folderName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?Constants.MESSAGE_VIDEO:Constants.MESSAGE_IMAGES;
+        String fileName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)? pushId+ ".mb4" : pushId + ".jpg";
+
+        StorageReference fileRef = storageReference.child(folderName).child(fileName);
+        fileRef.putFile(uri);
     }
+
+    private void uploadBytes(ByteArrayOutputStream bytes, String messageType)
+    {
+        DatabaseReference databaseReference = mRootRef.child(NodeNames.MESSAGES).child(currentUserID).child(chatUserID).push();
+        String pushId = databaseReference.getKey();
+
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        String folderName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?Constants.MESSAGE_VIDEO:Constants.MESSAGE_IMAGES;
+        String fileName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)? pushId+ ".mb4" : pushId + ".jpg";
+
+        StorageReference fileRef = storageReference.child(folderName).child(fileName);
+        fileRef.putBytes(bytes.toByteArray());
+    }
+
+}
