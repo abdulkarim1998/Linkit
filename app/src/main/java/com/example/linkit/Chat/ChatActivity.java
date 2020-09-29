@@ -430,3 +430,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 }
+    private void uploadfile(Uri uri, String messageType)
+    {
+
+    }
