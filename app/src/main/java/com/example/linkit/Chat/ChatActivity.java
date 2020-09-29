@@ -440,7 +440,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private void uploadfile(Uri uri, String messageType)
     {
 
-        DatabaseReference databaseReference = mRootRef.child(NodeNames.MESSAGES).child(currentUserID).child(chatUserID).push();
+        DatabaseReference databaseReference = rootRef.child(Node.MESSAGES).child(currentUserID).child(chatUserID).push();
         String pushId = databaseReference.getKey();
 
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
@@ -453,7 +453,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     private void uploadBytes(ByteArrayOutputStream bytes, String messageType)
     {
-        DatabaseReference databaseReference = mRootRef.child(NodeNames.MESSAGES).child(currentUserID).child(chatUserID).push();
+        DatabaseReference databaseReference = rootRef.child(Node.MESSAGES).child(currentUserID).child(chatUserID).push();
         String pushId = databaseReference.getKey();
 
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
