@@ -4,22 +4,30 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.SyncStateContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +38,7 @@ import com.example.linkit.R;
 import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -41,14 +50,21 @@ import com.google.firebase.database.ServerValue;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.security.Permission;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static android.provider.MediaStore.ACTION_IMAGE_CAPTURE;
 import static com.example.linkit.Chat.Extras.USER_KEY;
 import static com.example.linkit.Chat.Extras.USER_NAME;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private static final int REQUEST_READ_EXTERNAL_MEMORY = 69;
+    private static final int REQUEST_PICK_IMAGE = 1;
+    private static final int REQUEST_PICK_VIDEO = 2;
+    private static final int REQUEST_CAPTURE_IMAGE = 3;
 
     private ImageView sentBtn, profilePhoto;
     private TextView tvUserName;
@@ -73,6 +89,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private String user_name, user_photo;
 
+    private BottomSheetDialog bottomSheetDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +99,7 @@ public class ChatActivity extends AppCompatActivity {
 
         typingSpace = findViewById(R.id.typingSpace);
         sentBtn = findViewById(R.id.sendingBtn);
-
+        attachBtn = findViewById(R.id.attachBtn);
 
         firebaseAuth = FirebaseAuth.getInstance();
         rootRef = FirebaseDatabase.getInstance().getReference();
@@ -107,6 +125,8 @@ public class ChatActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        attachBtn.setOnClickListener(this);
 
         loadMessages();
         recyclerView.scrollToPosition(messageModels.size()-1);
@@ -151,8 +171,12 @@ public class ChatActivity extends AppCompatActivity {
         }
 
 
-
-
+        bottomSheetDialog = new BottomSheetDialog(this);
+        View view = getLayoutInflater().inflate(R.layout.send_file_options, null);
+        view.findViewById(R.id.llCamera).setOnClickListener(this);
+        view.findViewById(R.id.llGallery).setOnClickListener(this);
+        view.findViewById(R.id.llVideo).setOnClickListener(this);
+        view.findViewById(R.id.close).setOnClickListener(this);
     }
 
     public void sendMessage(View view)
@@ -321,5 +345,88 @@ public class ChatActivity extends AppCompatActivity {
                     haveConnectedMobile = true;
         }
         return haveConnectedWifi || haveConnectedMobile;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId())
+        {
+            case R.id.attachBtn:
+                if(ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                {
+                    if(bottomSheetDialog != null)
+                    {
+                        bottomSheetDialog.show();
+                    }
+                }
+                else
+                {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            REQUEST_READ_EXTERNAL_MEMORY);
+                }
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if(inputMethodManager != null)
+                {
+                    inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(),0);
+                }
+                break;
+
+            case R.id.llCamera:
+                bottomSheetDialog.dismiss();
+                Intent intentForCamera = new Intent(ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intentForCamera, REQUEST_CAPTURE_IMAGE);
+                break;
+            case R.id.llGallery:
+                bottomSheetDialog.dismiss();
+                Intent intentForGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intentForGallery, REQUEST_PICK_IMAGE);
+                break;
+            case R.id.llVideo:
+                bottomSheetDialog.dismiss();
+                Intent intentForVideo = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intentForVideo, REQUEST_PICK_VIDEO);
+                break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == REQUEST_READ_EXTERNAL_MEMORY)
+        {
+            if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                if(bottomSheetDialog != null)
+                {
+                    bottomSheetDialog.show();
+                }
+            }
+            else
+            {
+                Toast.makeText(this, "Permission required to access the files", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK)
+        {
+            if(requestCode == REQUEST_CAPTURE_IMAGE)
+            {
+                Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            }
+            else if (requestCode == REQUEST_PICK_IMAGE)
+            {
+                Uri uri = data.getData();
+            }
+            else if (requestCode == REQUEST_PICK_VIDEO)
+            {
+                Uri uri = data.getData();
+            }
+        }
     }
 }

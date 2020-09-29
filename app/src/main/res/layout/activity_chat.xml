@@ -28,7 +28,7 @@
             android:inputType="textPersonName" />
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/attachBtn"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginTop="9dp"
