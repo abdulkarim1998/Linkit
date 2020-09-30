@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.linkit"
-        minSdkVersion 25
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -36,6 +36,7 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-database:16.0.4'
     implementation 'com.google.firebase:firebase-storage:16.0.4'
+    implementation 'com.google.android.material:material:1.1.0'
 
     //glide
     implementation 'com.github.bumptech.glide:glide:4.9.0'

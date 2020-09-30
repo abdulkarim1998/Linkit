@@ -16,4 +16,6 @@
     <string name="request_declined_successfully">request declined successfully</string>
     <string name="fail_to_accept">fail to accept</string>
     <string name="accepted_successfully">accepted successfully</string>
+    <string name="uploading_file">uploading %1$s (%2$s %%)</string>
+    <string name="uploading..">uploading..</string>
 </resources>

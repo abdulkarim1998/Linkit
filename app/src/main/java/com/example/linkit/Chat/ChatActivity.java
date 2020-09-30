@@ -29,6 +29,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +38,10 @@ import com.bumptech.glide.Glide;
 import com.example.linkit.Node;
 import com.example.linkit.R;
 import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -47,7 +52,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.security.Permission;
@@ -90,7 +97,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private String user_name, user_photo;
 
     private BottomSheetDialog bottomSheetDialog;
-
+    private LinearLayout fileUploadProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +107,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         typingSpace = findViewById(R.id.typingSpace);
         sentBtn = findViewById(R.id.sendingBtn);
         attachBtn = findViewById(R.id.attachBtn);
+        fileUploadProgress = (LinearLayout) findViewById(R.id.fileUploadProgress);
 
         firebaseAuth = FirebaseAuth.getInstance();
         rootRef = FirebaseDatabase.getInstance().getReference();
@@ -177,6 +185,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         view.findViewById(R.id.llGallery).setOnClickListener(this);
         view.findViewById(R.id.llVideo).setOnClickListener(this);
         view.findViewById(R.id.close).setOnClickListener(this);
+        bottomSheetDialog.setContentView(view);
     }
 
     public void sendMessage(View view)
@@ -448,8 +457,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         String fileName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)? pushId+ ".mb4" : pushId + ".jpg";
 
         StorageReference fileRef = storageReference.child(folderName).child(fileName);
-        fileRef.putFile(uri);
+        UploadTask task = fileRef.putFile(uri);
+        uploadProgress(task, fileRef, pushId, messageType);
     }
+
 
     private void uploadBytes(ByteArrayOutputStream bytes, String messageType)
     {
@@ -461,7 +472,84 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         String fileName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)? pushId+ ".mb4" : pushId + ".jpg";
 
         StorageReference fileRef = storageReference.child(folderName).child(fileName);
-        fileRef.putBytes(bytes.toByteArray());
+
+        UploadTask task = fileRef.putBytes(bytes.toByteArray());
+        uploadProgress(task, fileRef, pushId, messageType);
     }
 
+
+
+    public void uploadProgress(final UploadTask task, final StorageReference ref, final String pushId, final String messageType){
+        final View view = getLayoutInflater().inflate(R.layout.file_progress, null);
+        final TextView tvFileProgress = findViewById(R.id.tvfileProgress);
+        final ProgressBar pbFile = findViewById(R.id.pbFile);
+        final ImageView ivPause = findViewById(R.id.ivpause);
+        final ImageView ivPlay = findViewById(R.id.play);
+        ImageView ivCancel = findViewById(R.id.cancel);
+
+
+        ivPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                task.pause();
+                ivPlay.setVisibility(View.VISIBLE);
+                ivPause.setVisibility(View.GONE);
+            }
+        });
+
+        ivPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                task.resume();
+                ivPause.setVisibility(View.VISIBLE);
+                ivPlay.setVisibility(View.GONE);
+            }
+        });
+
+        ivCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                task.cancel();
+
+            }
+        });
+
+        fileUploadProgress.addView(view);
+        tvFileProgress.setText(getString(R.string.uploading_file, messageType, "0"));
+        task.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                double progress = 100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount();
+
+                pbFile.setProgress((int) progress);
+                tvFileProgress.setText(getString(R.string.uploading_file, messageType, String.valueOf(pbFile.getProgress())));
+
+            }
+        });
+
+        task.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                fileUploadProgress.removeView(view);
+
+                if(task.isSuccessful()){
+                    ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String downloadUrl = uri.toString();
+                            createMessage(downloadUrl, messageType, pushId);
+                        }
+                    });
+                }
+            }
+        });
+
+        task.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                fileUploadProgress.removeView(view);
+                Toast.makeText(ChatActivity.this,"fail to upload", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 }
