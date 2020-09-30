@@ -19,7 +19,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.SyncStateContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -27,7 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -37,7 +35,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.linkit.Node;
 import com.example.linkit.R;
-import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -57,14 +54,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.security.Permission;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import static android.provider.MediaStore.ACTION_IMAGE_CAPTURE;
-import static com.example.linkit.Chat.Extras.USER_KEY;
-import static com.example.linkit.Chat.Extras.USER_NAME;
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -436,17 +430,17 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             else if (requestCode == REQUEST_PICK_IMAGE)
             {
                 Uri uri = data.getData();
-                uploadfile(uri, Constants.MESSAGE_TYPE_IMAGE);
+                uploadFile(uri, Constants.MESSAGE_TYPE_IMAGE);
             }
             else if (requestCode == REQUEST_PICK_VIDEO)
             {
                 Uri uri = data.getData();
-                uploadfile(uri, Constants.MESSAGE_TYPE_VIDEO);
+                uploadFile(uri, Constants.MESSAGE_TYPE_VIDEO);
             }
         }
     }
 
-    private void uploadfile(Uri uri, String messageType)
+    private void uploadFile(Uri uri, String messageType)
     {
 
         DatabaseReference databaseReference = rootRef.child(Node.MESSAGES).child(currentUserID).child(chatUserID).push();
@@ -472,7 +466,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         String fileName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)? pushId+ ".mb4" : pushId + ".jpg";
 
         StorageReference fileRef = storageReference.child(folderName).child(fileName);
-
         UploadTask task = fileRef.putBytes(bytes.toByteArray());
         uploadProgress(task, fileRef, pushId, messageType);
     }
@@ -481,11 +474,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     public void uploadProgress(final UploadTask task, final StorageReference ref, final String pushId, final String messageType){
         final View view = getLayoutInflater().inflate(R.layout.file_progress, null);
-        final TextView tvFileProgress = findViewById(R.id.tvfileProgress);
-        final ProgressBar pbFile = findViewById(R.id.pbFile);
-        final ImageView ivPause = findViewById(R.id.ivpause);
-        final ImageView ivPlay = findViewById(R.id.play);
-        ImageView ivCancel = findViewById(R.id.cancel);
+        final TextView tvFileProgress = view.findViewById(R.id.tvfileProgress);
+        final ProgressBar pbFile = view.findViewById(R.id.pbFile);
+        final ImageView ivPause = view.findViewById(R.id.ivpause);
+        final ImageView ivPlay = view.findViewById(R.id.play);
+        ImageView ivCancel = view.findViewById(R.id.cancel);
 
 
         ivPause.setOnClickListener(new View.OnClickListener() {
