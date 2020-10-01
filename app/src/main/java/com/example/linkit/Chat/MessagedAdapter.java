@@ -4,14 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import androidx.appcompat.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,7 +34,7 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
     private Context context;
     private List<MessageModel> messageModels;
     private FirebaseAuth firebaseAuth;
-    //private ActionMode actionMode;
+    private ActionMode actionMode;
     public MessagedAdapter(Context context, List<MessageModel> messageModels) {
         this.context = context;
         this.messageModels = messageModels;
@@ -42,7 +48,7 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MessagedAdapter.MessageViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MessagedAdapter.MessageViewHolder holder, int position) {
 
         final MessageModel messageModel = messageModels.get(position);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -130,6 +136,20 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
             }
         });
 
+
+        holder.constraintLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(actionMode!= null) {
+                    return false;
+                }
+                actionMode = ((AppCompatActivity)context).startSupportActionMode(actionModeCallback);
+                holder.constraintLayout.setBackgroundColor(context.getResources().getColor(R.color.mr_cast_progressbar_background_light));
+
+                return true;
+            }
+        });
+
     }
 
     @Override
@@ -166,6 +186,60 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
 
         }
     }
+
+    public ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+
+            MenuInflater inflater = actionMode.getMenuInflater();
+            inflater.inflate(R.menu.message_menu, menu);
+
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+
+
+            return false;
+
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+
+            int itemId = menuItem.getItemId();
+            switch (itemId)
+            {
+                case R.id.item_delete:
+                    Toast.makeText(context, "message is deleted", Toast.LENGTH_SHORT).show();
+                    actionMode.finish();
+                    break;
+                case R.id.item_download:
+                    Toast.makeText(context, "message is downloaded", Toast.LENGTH_SHORT).show();
+                    actionMode.finish();
+                    break;
+                case R.id.item_share:
+                    Toast.makeText(context, "share message is clicked", Toast.LENGTH_SHORT).show();
+                    actionMode.finish();
+                    break;
+                case R.id.item_forward:
+                    Toast.makeText(context, "forward message is clicked ", Toast.LENGTH_SHORT).show();
+                    actionMode.finish();
+                    break;
+            }
+
+
+
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode actionMode) {
+
+            actionMode = null;
+        }
+    };
 
 
 }
