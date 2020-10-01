@@ -572,7 +572,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                                 StorageReference fileRef = FirebaseStorage.getInstance().getReference();
                                 String folder = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?Constants.MESSAGE_VIDEO:Constants.MESSAGE_IMAGES;
                                 String fileName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?messageId + ".mp4" : messageId + "jpg";
-                                StorageReference fileRef = rootRef.child(folder).child(fileName);
+                                StorageReference ggg = fileRef.child(folder).child(fileName);
 
                                 fileRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
