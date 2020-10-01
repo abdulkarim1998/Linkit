@@ -35,9 +35,12 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
     private List<MessageModel> messageModels;
     private FirebaseAuth firebaseAuth;
     private ActionMode actionMode;
+    private ConstraintLayout selectedView;
     public MessagedAdapter(Context context, List<MessageModel> messageModels) {
         this.context = context;
         this.messageModels = messageModels;
+
+
     }
 
     @NonNull
@@ -143,6 +146,9 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
                 if(actionMode!= null) {
                     return false;
                 }
+
+                selectedView = holder.constraintLayout;
+
                 actionMode = ((AppCompatActivity)context).startSupportActionMode(actionModeCallback);
                 holder.constraintLayout.setBackgroundColor(context.getResources().getColor(R.color.mr_cast_progressbar_background_light));
 
@@ -208,11 +214,20 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
         @Override
         public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
 
+            String selectedMessageId = String.valueOf(selectedView.getTag(R.id.TAG_MESSAGE_ID));
+            String selectedMessage = String.valueOf(selectedView.getTag(R.id.TAG_MESSAGE));
+            String selectedMessageType = String.valueOf(selectedView.getTag(R.id.TAG_MESSAGE_TYPE));
+
+
             int itemId = menuItem.getItemId();
             switch (itemId)
             {
                 case R.id.item_delete:
-                    Toast.makeText(context, "message is deleted", Toast.LENGTH_SHORT).show();
+                    // (no need)// Toast.makeText(context, "message is deleted", Toast.LENGTH_SHORT).show();
+                    if(context instanceof  ChatActivity)
+                    {
+                        ((ChatActivity)context).deleteMessage(selectedMessageId, selectedMessageType);
+                    }
                     actionMode.finish();
                     break;
                 case R.id.item_download:

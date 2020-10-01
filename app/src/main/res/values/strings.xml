@@ -18,4 +18,7 @@
     <string name="accepted_successfully">accepted successfully</string>
     <string name="uploading_file">uploading %1$s (%2$s %%)</string>
     <string name="uploading..">uploading..</string>
+    <string name="failed_to_delete_message">Failed to delete message :%1$s</string>
+    <string name="message_deleted_successfully">Message deleted successfully</string>
+    <string name="failed_to_delete_file">Failed to delete file %1$s</string>
 </resources>
