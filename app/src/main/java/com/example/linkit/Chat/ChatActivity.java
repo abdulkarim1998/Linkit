@@ -619,14 +619,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     else{
 
-        String folder = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?Constants.MESSAGE_VIDEO:Constants.MESSAGE_IMAGES;
-        String fileName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?messageId + ".mp4" : messageId + "jpg";
+        String folderName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?Constants.MESSAGE_VIDEO:Constants.MESSAGE_IMAGES;
+        String fileName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?messageId + ".mb4" : messageId + ".jpg";
 
-        StorageReference fileRef = FirebaseStorage.getInstance().getReference().child(folder).child(fileName);
+        StorageReference fileRef = FirebaseStorage.getInstance().getReference().child(folderName).child(fileName);
         final String localPath = getExternalFilesDir(null).getAbsolutePath() + "/" + fileName;
 
 
-        File localFile = new File(localPath);
+        final File localFile = new File(localPath);
 
         try {
 
@@ -670,6 +670,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
                 fileUploadProgress.addView(view);
                 tvFileProgress.setText(getString(R.string.downloading_file, messageType, "0"));
+
                 downloadTask.addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -696,7 +697,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
                                     Uri uri = Uri.parse(localPath);
                                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                    if(messageType.equals(Constants.MESSAGE_TYPE_VIDEO))
+
+                                     if(messageType.equals(Constants.MESSAGE_TYPE_VIDEO))
                                     {
                                         intent.setDataAndType(uri, "video/mp4");
                                     }
@@ -715,7 +717,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 downloadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(ChatActivity.this,"fail to download", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ChatActivity.this, getString(R.string.fail_to_download, e.getMessage()), Toast.LENGTH_LONG).show();
                     }
                 });
             } else {
@@ -723,7 +725,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "fail to store the file", Toast.LENGTH_SHORT).show();
             }
         }
-        catch (Exception e){
+        catch (Exception ex){
+            Toast.makeText(ChatActivity.this, getString(R.string.fail_to_download, ex.getMessage()), Toast.LENGTH_LONG).show();
 
         }
     }

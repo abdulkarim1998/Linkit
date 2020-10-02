@@ -239,7 +239,10 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
                     actionMode.finish();
                     break;
                 case R.id.item_download:
-                    ((ChatActivity)context).downloadFile(selectedMessageId, selectedMessageType);
+                    if(context instanceof  ChatActivity)
+                    {
+                        ((ChatActivity)context).downloadFile(selectedMessageId, selectedMessageType);
+                    }
                     actionMode.finish();
                     break;
                 case R.id.item_share:
