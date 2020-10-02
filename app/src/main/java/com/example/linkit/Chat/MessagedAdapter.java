@@ -200,6 +200,14 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
             MenuInflater inflater = actionMode.getMenuInflater();
             inflater.inflate(R.menu.message_menu, menu);
 
+            String selectedMessageType= String.valueOf(selectedView.getTag(R.id.TAG_MESSAGE_TYPE));
+
+            if(selectedMessageType.equals(Constants.MESSAGE_TYPE_TEXT)){
+
+                MenuItem itemDownload = menu.findItem(R.id.item_download);
+                itemDownload.setVisible(false);
+            }
+
             return true;
         }
 
@@ -231,7 +239,7 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
                     actionMode.finish();
                     break;
                 case R.id.item_download:
-                    Toast.makeText(context, "message is downloaded", Toast.LENGTH_SHORT).show();
+                    ((ChatActivity)context).downloadFile(selectedMessageId, selectedMessageType);
                     actionMode.finish();
                     break;
                 case R.id.item_share:
@@ -253,6 +261,7 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
         public void onDestroyActionMode(ActionMode actionMode) {
 
             actionMode = null;
+            selectedView.setBackgroundColor(context.getResources().getColor(android.R.color.white));
         }
     };
 

@@ -12,6 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
@@ -40,6 +41,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -48,12 +50,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -567,14 +571,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         {
                             Toast.makeText(ChatActivity.this, R.string.message_deleted_successfully, Toast.LENGTH_SHORT).show();
 
-                            if(messageType.equals(Constants.MESSAGE_TYPE_TEXT))
+                            if(!messageType.equals(Constants.MESSAGE_TYPE_TEXT))
                             {
                                 StorageReference fileRef = FirebaseStorage.getInstance().getReference();
                                 String folder = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?Constants.MESSAGE_VIDEO:Constants.MESSAGE_IMAGES;
                                 String fileName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?messageId + ".mp4" : messageId + "jpg";
                                 StorageReference ggg = fileRef.child(folder).child(fileName);
 
-                                fileRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                ggg.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if(!task.isSuccessful())
@@ -604,5 +608,124 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         });
 
 
+    }
+
+    public void downloadFile (String messageId, final String messageType){
+
+    if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+
+        ActivityCompat.requestPermissions(this, new String [] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+    }
+
+    else{
+
+        String folder = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?Constants.MESSAGE_VIDEO:Constants.MESSAGE_IMAGES;
+        String fileName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?messageId + ".mp4" : messageId + "jpg";
+
+        StorageReference fileRef = FirebaseStorage.getInstance().getReference().child(folder).child(fileName);
+        final String localPath = getExternalFilesDir(null).getAbsolutePath() + "/" + fileName;
+
+
+        File localFile = new File(localPath);
+
+        try {
+
+            if (localFile.exists() || localFile.createNewFile()) {
+
+                final FileDownloadTask downloadTask = fileRef.getFile(localFile);
+
+                final View view = getLayoutInflater().inflate(R.layout.file_progress, null);
+                final TextView tvFileProgress = view.findViewById(R.id.tvfileProgress);
+                final ProgressBar pbFile = view.findViewById(R.id.pbFile);
+                final ImageView ivPause = view.findViewById(R.id.ivpause);
+                final ImageView ivPlay = view.findViewById(R.id.play);
+                ImageView ivCancel = view.findViewById(R.id.cancel);
+
+
+                ivPause.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        downloadTask.pause();
+                        ivPlay.setVisibility(View.VISIBLE);
+                        ivPause.setVisibility(View.GONE);
+                    }
+                });
+
+                ivPlay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        downloadTask.resume();
+                        ivPause.setVisibility(View.VISIBLE);
+                        ivPlay.setVisibility(View.GONE);
+                    }
+                });
+
+                ivCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        downloadTask.cancel();
+
+                    }
+                });
+
+                fileUploadProgress.addView(view);
+                tvFileProgress.setText(getString(R.string.downloading_file, messageType, "0"));
+                downloadTask.addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        double progress = 100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount();
+
+                        pbFile.setProgress((int) progress);
+                        tvFileProgress.setText(getString(R.string.downloading_file, messageType, String.valueOf(pbFile.getProgress())));
+
+                    }
+                });
+
+                downloadTask.addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                        fileUploadProgress.removeView(view);
+
+                        if(task.isSuccessful()) {
+
+                            final Snackbar snackbar = Snackbar.make(fileUploadProgress, "file downloaded successfully", Snackbar.LENGTH_INDEFINITE);
+
+                            snackbar.setAction(R.string.view, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                    Uri uri = Uri.parse(localPath);
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    if(messageType.equals(Constants.MESSAGE_TYPE_VIDEO))
+                                    {
+                                        intent.setDataAndType(uri, "video/mp4");
+                                    }
+                                    else if (messageType.equals(Constants.MESSAGE_TYPE_IMAGE))
+                                    {
+                                        intent.setDataAndType(uri, "image/jpg");
+                                    }
+
+                                    startActivity(intent);
+                                }
+                            });
+                            snackbar.show();
+                        }
+                    }
+                });
+                downloadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ChatActivity.this,"fail to download", Toast.LENGTH_LONG).show();
+                    }
+                });
+            } else {
+
+                Toast.makeText(this, "fail to store the file", Toast.LENGTH_SHORT).show();
+            }
+        }
+        catch (Exception e){
+
+        }
+    }
     }
 }
