@@ -36,6 +36,8 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
     private FirebaseAuth firebaseAuth;
     private ActionMode actionMode;
     private ConstraintLayout selectedView;
+
+
     public MessagedAdapter(Context context, List<MessageModel> messageModels) {
         this.context = context;
         this.messageModels = messageModels;
@@ -121,7 +123,6 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
         holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("nooo", messageModel.getMessageType());
                 String msgType = v.getTag(R.id.TAG_MESSAGE_TYPE).toString();
                 Uri uri = Uri.parse(v.getTag(R.id.TAG_MESSAGE).toString());
                 if(msgType.equals(Constants.MESSAGE_TYPE_VIDEO))
@@ -231,7 +232,6 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
             switch (itemId)
             {
                 case R.id.item_delete:
-                    // (no need)// Toast.makeText(context, "message is deleted", Toast.LENGTH_SHORT).show();
                     if(context instanceof  ChatActivity)
                     {
                         ((ChatActivity)context).deleteMessage(selectedMessageId, selectedMessageType);

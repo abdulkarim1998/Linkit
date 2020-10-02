@@ -50,6 +50,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -552,7 +553,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     public void deleteMessage(final String messageId, final String messageType)
     {
-        DatabaseReference databaseReference = rootRef.child(Node.MESSAGE)
+        Log.i("messageType", messageType);
+        Log.i("messageID", messageId);
+
+        DatabaseReference databaseReference = rootRef.child(Node.MESSAGES)
                 .child(currentUserID).child(chatUserID).child(messageId);
 
         databaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -561,7 +565,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
             if(task.isSuccessful())
             {
-                DatabaseReference databaseReferenceChatUser = rootRef.child(Node.MESSAGE)
+                DatabaseReference databaseReferenceChatUser = rootRef.child(Node.MESSAGES)
                         .child(chatUserID).child(currentUserID).child(messageId);
 
                 databaseReferenceChatUser.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -576,9 +580,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                                 StorageReference fileRef = FirebaseStorage.getInstance().getReference();
                                 String folder = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?Constants.MESSAGE_VIDEO:Constants.MESSAGE_IMAGES;
                                 String fileName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?messageId + ".mp4" : messageId + "jpg";
-                                StorageReference ggg = fileRef.child(folder).child(fileName);
+                                StorageReference f = fileRef.child(folder).child(fileName);
 
-                                ggg.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                f.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if(!task.isSuccessful())
@@ -590,9 +594,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                                 });
 
                             }
+                            loadMessages();
                         }
                         else
                         {
+                            Log.i("Here", "inner one");
                             Toast.makeText(ChatActivity.this, getString(R.string.failed_to_delete_message,task.getException()),
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -601,12 +607,26 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
             else
             {
+                Log.i("Here", "outer one");
                 Toast.makeText(ChatActivity.this, getString(R.string.failed_to_delete_message,task.getException()),
                         Toast.LENGTH_SHORT).show();
             }
             }
         });
 
+
+    }
+
+    public void deleteMessage2(final String messageId, final String messageType)
+    {
+        Log.i("messageType2", messageType);
+        Log.i("messageID2", messageId);
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(Node.MESSAGES)
+                .child("F9RyXr4AYlMk6Wj3OCZLwPnhZ9k1").child("UrOSIuqf3CeA2rJvj1l706CfLn03").child("MIc23f0KKfhxNupAayc");
+
+        databaseReference.removeValue();
+        Toast.makeText(this, "done", Toast.LENGTH_SHORT).show();
 
     }
 
