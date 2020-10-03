@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.linkit.R;
+import com.example.linkit.selectFriend.SelectFriendActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
@@ -265,6 +266,7 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
                     actionMode.finish();
                     break;
                 case R.id.item_forward:
+                    context.startActivity(new Intent(context, SelectFriendActivity.class));
                     Toast.makeText(context, "forward message is clicked ", Toast.LENGTH_SHORT).show();
                     actionMode.finish();
                     break;

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.linkit">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Chat.ChatActivity"></activity>
+        <activity android:name=".selectFriend.SelectFriendActivity"></activity>
+        <activity android:name=".Chat.ChatActivity" />
         <activity android:name=".ChangePasswordActivity" />
         <activity android:name=".MainActivity2" />
         <activity android:name=".ProfileActivity" />
