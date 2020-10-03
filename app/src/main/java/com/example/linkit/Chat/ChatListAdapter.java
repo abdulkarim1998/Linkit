@@ -43,8 +43,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
         final ChatListModel chatListModel = chatListModels.get(position);
 
         holder.username.setText(chatListModel.getUsername());
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images/"+ chatListModel.getPhotoName());
-        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        StorageReference photoRef = FirebaseStorage.getInstance().getReference().child(Constants.IMAGES_FOLDER + "/" + chatListModel.getUserId()+".jpg");
+        photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 Glide.with(context)

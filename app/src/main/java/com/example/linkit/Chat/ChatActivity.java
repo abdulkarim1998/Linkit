@@ -115,12 +115,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         if(getIntent().hasExtra(Extras.USER_KEY))
         {
             chatUserID = getIntent().getStringExtra(Extras.USER_KEY);
+            user_photo = chatUserID + ".jpg";
         }
         if(getIntent().hasExtra(Extras.USER_NAME)) {
             user_name = getIntent().getStringExtra(Extras.USER_NAME);
-        }
-        if(getIntent().hasExtra(Extras.USER_PHOTO)) {
-            user_photo = getIntent().getStringExtra(Extras.USER_PHOTO);
         }
 
 
@@ -158,13 +156,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
+
         profilePhoto = findViewById(R.id.profilePhoto);
         tvUserName = (TextView) findViewById(R.id.tvUserName);
 
         tvUserName.setText(user_name);
         if(!TextUtils.isEmpty(user_photo)) {
-            StorageReference photoReference = FirebaseStorage.getInstance().getReference().child("images").child(user_photo);
-            photoReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            StorageReference photoRef = FirebaseStorage.getInstance().getReference().child(Constants.IMAGES_FOLDER + "/" + user_photo);
+            photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
                     Glide.with(ChatActivity.this)
@@ -579,7 +578,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                             {
                                 StorageReference fileRef = FirebaseStorage.getInstance().getReference();
                                 String folder = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?Constants.MESSAGE_VIDEO:Constants.MESSAGE_IMAGES;
-                                String fileName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?messageId + ".mp4" : messageId + "jpg";
+                                String fileName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?messageId + ".mp4" : messageId + ".jpg";
                                 StorageReference f = fileRef.child(folder).child(fileName);
 
                                 f.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
