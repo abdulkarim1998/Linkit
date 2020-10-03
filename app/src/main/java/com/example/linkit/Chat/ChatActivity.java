@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.linkit.Node;
 import com.example.linkit.R;
+import com.example.linkit.selectFriend.SelectFriendActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -71,6 +72,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private static final int REQUEST_PICK_IMAGE = 1;
     private static final int REQUEST_PICK_VIDEO = 2;
     private static final int REQUEST_CAPTURE_IMAGE = 3;
+    private static final int REQUEST_FORWARD = 911;
 
     private ImageView sentBtn, profilePhoto;
     private TextView tvUserName;
@@ -184,6 +186,40 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         view.findViewById(R.id.llVideo).setOnClickListener(this);
         view.findViewById(R.id.close).setOnClickListener(this);
         bottomSheetDialog.setContentView(view);
+
+        if(getIntent().hasExtra(Extras.MESSAGE) && getIntent().hasExtra(Extras.MESSAGE_ID) && getIntent().hasExtra(Extras.MESSAGE_TYPE))
+        {
+            final String messageId = getIntent().getStringExtra(Extras.MESSAGE_ID);
+            String message = getIntent().getStringExtra(Extras.MESSAGE);
+            final String messageType = getIntent().getStringExtra(Extras.MESSAGE_TYPE);
+
+            DatabaseReference messageRef = rootRef.child(Node.MESSAGES).child(currentUserID).child(chatUserID).push();
+            final String newMsgId = messageRef.getKey();
+
+            if(messageType.equals(Constants.MESSAGE_TYPE_TEXT)) {
+                createMessage(message, messageType, newMsgId);
+            }
+            else
+            {
+                StorageReference rootStorage = FirebaseStorage.getInstance().getReference();
+                String folder = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)? Constants.MESSAGE_VIDEO: Constants.MESSAGE_IMAGES;
+                String oldFileName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)? messageId+".mp4": messageId+".jpg";
+                String newFileName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)? newMsgId+".mp4": newMsgId+".jpg";
+
+                final String localPath = getExternalFilesDir(null).getAbsolutePath() +"/"+ oldFileName;
+                final File localFile = new File(localPath);
+
+                final StorageReference newFileRef = rootStorage.child(folder).child(newFileName);
+                rootStorage.child(folder).child(oldFileName).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        UploadTask uploadTask = newFileRef.putFile(Uri.fromFile(localFile));
+                        uploadProgress(uploadTask, newFileRef, newMsgId, messageType);
+                    }
+                });
+            }
+        }
+
     }
 
     public void sendMessage(View view)
@@ -440,6 +476,21 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             {
                 Uri uri = data.getData();
                 uploadFile(uri, Constants.MESSAGE_TYPE_VIDEO);
+            }
+            else if(requestCode == REQUEST_FORWARD)
+            {
+                Intent intent = new Intent(this, ChatActivity.class);
+                intent.putExtra(Extras.USER_KEY, data.getStringExtra(Extras.USER_KEY));
+                intent.putExtra(Extras.USER_NAME, data.getStringExtra(Extras.USER_NAME));
+                intent.putExtra(Extras.USER_PHOTO, data.getStringExtra(Extras.USER_PHOTO));
+
+
+                intent.putExtra(Extras.MESSAGE_ID, data.getStringExtra(Extras.MESSAGE_ID));
+                intent.putExtra(Extras.MESSAGE, data.getStringExtra(Extras.MESSAGE));
+                intent.putExtra(Extras.MESSAGE_TYPE, data.getStringExtra(Extras.MESSAGE_TYPE));
+
+                startActivity(intent);
+                finish();
             }
         }
     }
@@ -751,5 +802,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         }
     }
+    }
+
+    public void forwardAMessage(String selectedMessageId, String selectedMessage, String selectedMessageType) {
+        Intent intent = new Intent(this, SelectFriendActivity.class);
+        intent.putExtra(Extras.MESSAGE, selectedMessage);
+        intent.putExtra(Extras.MESSAGE_ID, selectedMessageId);
+        intent.putExtra(Extras.MESSAGE_TYPE, selectedMessageType);
+
+        startActivityForResult(intent, REQUEST_FORWARD);
     }
 }

@@ -5,11 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.service.autofill.Dataset;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.linkit.Chat.Extras;
 import com.example.linkit.Node;
 import com.example.linkit.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,10 +41,20 @@ public class SelectFriendActivity extends AppCompatActivity {
 
     private ValueEventListener valueEventListener;
 
+    private String selectedMessage, selectedMessageId, selectedMessageType;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_friend);
+
+
+        if(getIntent().hasExtra(Extras.MESSAGE))
+        {
+            selectedMessage = getIntent().getStringExtra(Extras.MESSAGE);
+            selectedMessageId = getIntent().getStringExtra(Extras.MESSAGE_ID);
+            selectedMessageType = getIntent().getStringExtra(Extras.MESSAGE_TYPE);
+        }
 
         recyclerView = findViewById(R.id.rvSelectFriend);
         progressBar = findViewById(R.id.progressBar);
@@ -94,5 +107,22 @@ public class SelectFriendActivity extends AppCompatActivity {
         };
 
         databaseReferenceChats.addValueEventListener(valueEventListener);
+    }
+
+    public void selectedFriendReturned(String userID, String username, String photo)
+    {
+        databaseReferenceChats.removeEventListener(valueEventListener);
+        Intent intent = new Intent();
+
+        intent.putExtra(Extras.USER_KEY, userID);
+        intent.putExtra(Extras.USER_NAME, username);
+        intent.putExtra(Extras.USER_PHOTO, photo);
+
+        intent.putExtra(Extras.MESSAGE, selectedMessage);
+        intent.putExtra(Extras.MESSAGE_ID, selectedMessageId);
+        intent.putExtra(Extras.MESSAGE_TYPE, selectedMessageType);
+
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 }

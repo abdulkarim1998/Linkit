@@ -41,7 +41,7 @@ public class SelectFriendAdapter extends RecyclerView.Adapter<SelectFriendAdapte
     @Override
     public void onBindViewHolder(@NonNull final SelectFriendAdapter.SelectFriendViewHolder holder, int position) {
 
-        SelectFriendModel selectFriendModel = selectFriendModels.get(position);
+        final SelectFriendModel selectFriendModel = selectFriendModels.get(position);
         holder.username.setText(selectFriendModel.getUsername());
 
         StorageReference photoRef = FirebaseStorage.getInstance().getReference().child(Constants.IMAGES_FOLDER+ "/" + selectFriendModel.getPhoto());
@@ -54,6 +54,20 @@ public class SelectFriendAdapter extends RecyclerView.Adapter<SelectFriendAdapte
                         .placeholder(R.drawable.profile)
                         .error(R.drawable.profile)
                         .into(holder.profile);
+            }
+        });
+
+        holder.llSelectFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(context instanceof SelectFriendActivity)
+                {
+                    ((SelectFriendActivity) context)
+                            .selectedFriendReturned(selectFriendModel.getUserID(), selectFriendModel.getUsername()
+                                    , selectFriendModel.getPhoto()+".jpg");
+
+
+                }
             }
         });
     }
