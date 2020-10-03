@@ -24,4 +24,8 @@
     <string name="downloading_file">downloading %1$s (%2$s %%)</string>
     <string name="view">View</string>
     <string name="fail_to_download">fail to download :%1$s</string>
+    <string name="reset_password">reset_password</string>
+    <string name="reset_password_instruction">Reset password instrctions has been sent on email: %1$s</string>
+    <string name="retry">Retry</string>
+    <string name="close">Close</string>
 </resources>

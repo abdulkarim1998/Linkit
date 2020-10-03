@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".selectFriend.SelectFriendActivity"></activity>
+        <activity android:name=".ResetPasswordActivity"></activity>
+        <activity android:name=".selectFriend.SelectFriendActivity" />
         <activity android:name=".Chat.ChatActivity" />
         <activity android:name=".ChangePasswordActivity" />
         <activity android:name=".MainActivity2" />
