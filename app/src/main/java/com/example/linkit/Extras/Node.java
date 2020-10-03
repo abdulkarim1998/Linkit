@@ -1,4 +1,4 @@
-package com.example.linkit;
+package com.example.linkit.Extras;
 
 public class Node {
 
@@ -6,6 +6,7 @@ public class Node {
     public static final String FRIEND_REQUEST = "FriendRequest";
     public static final String CHATS = "Chats";
     public static final String MESSAGES = "Messages";
+    public static final String TOKENS = "Tokens";
 
     public static final String REQUEST_TYPE = "Request Type";
 
@@ -24,5 +25,9 @@ public class Node {
     public static final String MESSAGE_TYPE = "messageType";
     public static final String MESSAGE_FROM = "from";
     public static final String MESSAGE_TIME = "messageTime";
+
+
+
+    public static final String DEVICE_TOKEN = "device_token";
 
 }

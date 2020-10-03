@@ -8,12 +8,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.service.autofill.Dataset;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.linkit.Chat.Extras;
-import com.example.linkit.Node;
+import com.example.linkit.Extras.Extras;
+import com.example.linkit.Extras.Node;
 import com.example.linkit.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

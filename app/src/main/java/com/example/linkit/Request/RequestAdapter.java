@@ -2,7 +2,6 @@ package com.example.linkit.Request;
 
 import android.content.Context;
 import android.net.Uri;
-import android.provider.SyncStateContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.linkit.Node;
+import com.example.linkit.Extras.Node;
+import com.example.linkit.Extras.Utility;
 import com.example.linkit.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,7 +26,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
-import com.google.firebase.database.core.Constants;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -107,6 +106,11 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                                                         public void onComplete(@NonNull Task<Void> task) {
                                                             if(task.isSuccessful()) {
                                                                 Toast.makeText(context, context.getString(R.string.accepted_successfully), Toast.LENGTH_SHORT).show();
+
+                                                                String title = "New Friend Request";
+                                                                String message = currentUser.getDisplayName()+ " accepted your friend request";
+                                                                Utility.sendingNotification(context, title, message, requestModel.getUserID());
+
                                                                 holder.progressBar.setVisibility(View.GONE);
                                                                 holder.declineButton.setVisibility(View.VISIBLE);
                                                                 holder.acceptButton.setVisibility(View.VISIBLE);
@@ -172,6 +176,11 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
                                         Toast.makeText(context, context.getString(R.string.request_declined_successfully), Toast.LENGTH_SHORT).show();
+
+                                        String title = "New Friend Request";
+                                        String message = currentUser.getDisplayName()+ " rejected your friend request";
+                                        Utility.sendingNotification(context, title, message, requestModel.getUserID());
+
                                         holder.progressBar.setVisibility(View.GONE );
                                         holder.declineButton.setVisibility(View.VISIBLE);
                                         holder.acceptButton.setVisibility(View.VISIBLE);

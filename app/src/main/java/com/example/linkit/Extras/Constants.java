@@ -1,4 +1,4 @@
-package com.example.linkit.Chat;
+package com.example.linkit.Extras;
 
 public class Constants {
 
@@ -15,5 +15,14 @@ public class Constants {
     public static final String MESSAGE_TYPE_VIDEO ="video";
 
 
+    public static final String NOTIFICATION_TITLE = "title";
+    public static final String NOTIFICATION_MESSAGE = "message";
+    public static final String NOTIFICATION_TO = "to";
+    public static final String NOTIFICATION_DATA = "data";
 
+
+
+
+    public static final String KEY = "AAAA6-kYpqg:APA91bEKyrjGMHHApOOYAmB3o6kp8aOyAGuhhEXHE8xuakBJM-7ITm589rJ9wamU3jY1RNLsFDs08SdRdPk2MitNdCsJzAShkTRizKf9gbn8bWBRabWfBMGt307gHzK0EdDK6TPdwQLu";
+    public static final String SENDER_ID = "1013228021416";
 }

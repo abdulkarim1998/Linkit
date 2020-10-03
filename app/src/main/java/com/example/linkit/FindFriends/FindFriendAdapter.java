@@ -15,7 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.linkit.Node;
+import com.example.linkit.Extras.Node;
+import com.example.linkit.Extras.Utility;
 import com.example.linkit.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -106,6 +107,11 @@ public class FindFriendAdapter extends RecyclerView.Adapter<FindFriendAdapter.Fi
                                     if(task.isSuccessful())
                                     {
                                         Toast.makeText(context, "Request sent successfully", Toast.LENGTH_SHORT).show();
+
+                                        String title = "New Friend Request";
+                                        String message = "Friend request from "+ user.getDisplayName();
+                                        Utility.sendingNotification(context, title, message, userID);
+
 
                                         holder.sendRequest.setVisibility(View.GONE);
                                         holder.progressBar.setVisibility(View.GONE);

@@ -1,4 +1,4 @@
-package com.example.linkit.Chat;
+package com.example.linkit.Extras;
 
 public class Extras {
 

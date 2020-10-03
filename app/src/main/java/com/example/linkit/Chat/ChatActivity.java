@@ -12,7 +12,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
@@ -34,7 +33,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.linkit.Node;
+import com.example.linkit.Extras.Constants;
+import com.example.linkit.Extras.Extras;
+import com.example.linkit.Extras.Node;
+import com.example.linkit.Extras.Utility;
 import com.example.linkit.R;
 import com.example.linkit.selectFriend.SelectFriendActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -51,7 +53,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -236,7 +237,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void createMessage(String msg, String msgType, String msgID) {
+    private void createMessage(final String msg, final String msgType, String msgID) {
         try {
             if (!msg.equals("")) {
                 HashMap hashMap = new HashMap<>();
@@ -261,8 +262,23 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                         if (databaseError != null) {
                             Toast.makeText(ChatActivity.this, "failed to send a message", Toast.LENGTH_SHORT).show();
-                        } else {
+                        }
+                        else {
+                            String title ="";
+                            if(msgType.equals(Constants.MESSAGE_TYPE_TEXT))
+                            {
+                                title = "New Message";
+                            }
+                            else if(msgType.equals(Constants.MESSAGE_TYPE_IMAGE))
+                            {
+                                title = "Image";
+                            }
+                            else if(msgType.equals(Constants.MESSAGE_TYPE_VIDEO))
+                            {
+                                title = "Video";
+                            }
 
+                            Utility.sendingNotification(ChatActivity.this, title, msg, chatUserID);
                         }
                     }
                 });
