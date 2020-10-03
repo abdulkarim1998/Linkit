@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -23,6 +24,8 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
 
     private View progressBar;
+
+    private boolean doubleBackPressed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +92,30 @@ public class LoginActivity extends AppCompatActivity {
         if(u != null)
         {
             startActivity(new Intent(LoginActivity.this, MainActivity2.class));
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+
+        if(doubleBackPressed)
+        {
+            finishAffinity();
+        }
+        else
+        {
+            doubleBackPressed = true;
+            Toast.makeText(this, "press back again to quit", Toast.LENGTH_SHORT).show();
+
+            android.os.Handler handler = new Handler();
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    doubleBackPressed = false;
+                }
+            }, 2000);
         }
     }
 }
