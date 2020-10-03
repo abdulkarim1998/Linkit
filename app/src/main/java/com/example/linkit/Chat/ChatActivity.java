@@ -282,6 +282,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     }
                 });
+
             }
         } catch (Exception e) {
             Toast.makeText(ChatActivity.this, "failed to send a message", Toast.LENGTH_SHORT).show();
