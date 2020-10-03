@@ -616,21 +616,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
-
-    public void deleteMessage2(final String messageId, final String messageType)
-    {
-        Log.i("messageType2", messageType);
-        Log.i("messageID2", messageId);
-
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(Node.MESSAGES)
-                .child("F9RyXr4AYlMk6Wj3OCZLwPnhZ9k1").child("UrOSIuqf3CeA2rJvj1l706CfLn03").child("MIc23f0KKfhxNupAayc");
-
-        databaseReference.removeValue();
-        Toast.makeText(this, "done", Toast.LENGTH_SHORT).show();
-
-    }
-
-    public void downloadFile (String messageId, final String messageType){
+    public void downloadFile (String messageId, final String messageType, final boolean isForShare){
 
     if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
 
@@ -709,28 +695,44 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
                         if(task.isSuccessful()) {
 
-                            final Snackbar snackbar = Snackbar.make(fileUploadProgress, "file downloaded successfully", Snackbar.LENGTH_INDEFINITE);
+                            if(isForShare)
+                            {
+                                Intent intentForShare = new Intent();
+                                intentForShare.setAction(Intent.ACTION_SEND);
+                                intentForShare.putExtra(Intent.EXTRA_STREAM, Uri.parse(localPath));
 
-                            snackbar.setAction(R.string.view, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-
-                                    Uri uri = Uri.parse(localPath);
-                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-
-                                     if(messageType.equals(Constants.MESSAGE_TYPE_VIDEO))
-                                    {
-                                        intent.setDataAndType(uri, "video/mp4");
-                                    }
-                                    else if (messageType.equals(Constants.MESSAGE_TYPE_IMAGE))
-                                    {
-                                        intent.setDataAndType(uri, "image/jpg");
-                                    }
-
-                                    startActivity(intent);
+                                if(messageType.equals(Constants.MESSAGE_TYPE_VIDEO))
+                                {
+                                    intentForShare.setType("video/mp4");
                                 }
-                            });
-                            snackbar.show();
+                                if(messageType.equals(Constants.MESSAGE_TYPE_IMAGE))
+                                {
+                                    intentForShare.setType("image/jpg");
+                                }
+                                startActivity(Intent.createChooser(intentForShare, "share it to ..."));
+                            }
+                            else {
+
+                                final Snackbar snackbar = Snackbar.make(fileUploadProgress, "file downloaded successfully", Snackbar.LENGTH_INDEFINITE);
+
+                                snackbar.setAction(R.string.view, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        Uri uri = Uri.parse(localPath);
+                                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+                                        if (messageType.equals(Constants.MESSAGE_TYPE_VIDEO)) {
+                                            intent.setDataAndType(uri, "video/mp4");
+                                        } else if (messageType.equals(Constants.MESSAGE_TYPE_IMAGE)) {
+                                            intent.setDataAndType(uri, "image/jpg");
+                                        }
+
+                                        startActivity(intent);
+                                    }
+                                });
+                                snackbar.show();
+                            }
                         }
                     }
                 });

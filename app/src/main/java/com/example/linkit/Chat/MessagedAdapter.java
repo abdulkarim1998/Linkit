@@ -241,12 +241,27 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
                 case R.id.item_download:
                     if(context instanceof  ChatActivity)
                     {
-                        ((ChatActivity)context).downloadFile(selectedMessageId, selectedMessageType);
+                        ((ChatActivity)context).downloadFile(selectedMessageId, selectedMessageType, false);
                     }
                     actionMode.finish();
                     break;
                 case R.id.item_share:
-                    Toast.makeText(context, "share message is clicked", Toast.LENGTH_SHORT).show();
+                    if(selectedMessageType.equals(Constants.MESSAGE_TYPE_TEXT))
+                    {
+                        Intent intentForShare = new Intent();
+                        intentForShare.setAction(Intent.ACTION_SEND);
+                        intentForShare.putExtra(Intent.EXTRA_TEXT, selectedMessage);
+                        intentForShare.setType("text/plain");
+                        context.startActivity(intentForShare);
+
+                    }
+                    else
+                    {
+                        if(context instanceof  ChatActivity)
+                        {
+                            ((ChatActivity)context).downloadFile(selectedMessageId, selectedMessageType, true);
+                        }
+                    }
                     actionMode.finish();
                     break;
                 case R.id.item_forward:
