@@ -266,8 +266,10 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
                     actionMode.finish();
                     break;
                 case R.id.item_forward:
-                    context.startActivity(new Intent(context, SelectFriendActivity.class));
-                    Toast.makeText(context, "forward message is clicked ", Toast.LENGTH_SHORT).show();
+                    if(context instanceof ChatActivity)
+                    {
+                        ((ChatActivity) context).forwardAMessage(selectedMessageId, selectedMessage, selectedMessageType);
+                    }
                     actionMode.finish();
                     break;
             }

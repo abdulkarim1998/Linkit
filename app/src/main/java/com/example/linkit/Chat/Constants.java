@@ -2,8 +2,8 @@ package com.example.linkit.Chat;
 
 public class Constants {
 
-    public static final String IMAGES_FOLDER ="images";
-    public static final String MESSAGE_VIDEO ="message_videos";
+    public static final String IMAGES_FOLDER ="images/";
+    public static final String MESSAGE_VIDEO ="message_videos/";
     public static final String MESSAGE_IMAGES ="message_images";
 
     public static final String REQUEST_STATUS_SENT ="sent";
