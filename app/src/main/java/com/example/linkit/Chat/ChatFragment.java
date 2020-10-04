@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +50,11 @@ public class ChatFragment extends Fragment {
 
     private ChildEventListener childEventListener;
     private Query query;
+
+    SearchView searchView;
+    //ListView listView;
+    //ArrayList<String> list;
+    //ArrayAdapter<String > adapter_2;
 
 
 
@@ -98,12 +106,14 @@ public class ChatFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = view.findViewById(R.id.rvMessages);
         textView = view.findViewById(R.id.emptyChatList);
         progressBar = view.findViewById(R.id.progressBar);
+        searchView = (SearchView) view.findViewById(R.id.searchView);
+        //listView = (ListView) view.findViewById(R.id.lv1);
 
         chatListModels = new ArrayList<>();
         adapter = new ChatListAdapter(getActivity(), chatListModels);
@@ -152,6 +162,32 @@ public class ChatFragment extends Fragment {
         query.addChildEventListener(childEventListener);
         textView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
+
+
+
+        /*list = new ArrayList<>();
+
+        adapter_2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,list);
+        listView.setAdapter(adapter_2);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                if(list.contains(query)){
+                    adapter_2.getFilter().filter(query);
+                }else{
+                    Toast.makeText(getActivity(), "No Match found",Toast.LENGTH_LONG).show();
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //    adapter.getFilter().filter(newText);
+                return false;
+            }
+        });*/
 
     }
 
