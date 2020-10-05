@@ -3,4 +3,5 @@
     <item name="TAG_MESSAGE" type="id"/>
     <item name="TAG_MESSAGE_ID" type="id"/>
     <item name="TAG_MESSAGE_TYPE" type="id"/>
+    <item name="Email" type="id" />
 </resources>
