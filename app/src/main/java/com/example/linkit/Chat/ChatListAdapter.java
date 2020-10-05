@@ -3,9 +3,11 @@ package com.example.linkit.Chat;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,12 +23,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder> {
 
     private Context context;
     private List<ChatListModel> chatListModels;
+    private static ArrayList<String> listt;
 
     public ChatListAdapter(Context context, List<ChatListModel> chatListModels) {
         this.context = context;
@@ -67,7 +71,23 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
                 context.startActivity(intent);
             }
         });
+        listt = new ArrayList<String>();
+        for(int i = 0; i<chatListModels.size(); i++)
+        {
+            listt.add(chatListModels.get(i).getUsername());
+        }
 
+    }
+
+    public static ArrayList<String> searchUsername(ArrayList<String> list){
+
+        for(int i = 0; i<listt.size(); i++)
+        {
+            list.add(listt.get(i));
+            Log.i("asd", listt.get(i));
+        }
+
+        return list;
     }
 
     @Override
@@ -87,8 +107,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             linearLayout = itemView.findViewById(R.id.chatList);
             username = itemView.findViewById(R.id.username);
             lastMessage = itemView.findViewById(R.id.lastMessage);
-            unreadMessageCount = itemView.findViewById(R.id.unreadMessageCount);
-            lastMessageTime = itemView.findViewById(R.id.lastMessageTime);
             profile = itemView.findViewById(R.id.profile);
         }
     }

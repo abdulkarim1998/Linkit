@@ -15,23 +15,28 @@
         android:id="@+id/profile"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="38dp"
         android:onClick="changeProfilePhoto"
         android:src="@drawable/profile"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
         android:background="@color/colorPrimary"
         app:cardCornerRadius="16dp"
         app:cardElevation="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/button2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile">
 
@@ -86,13 +91,16 @@
         android:id="@+id/button2"
         android:layout_width="186dp"
         android:layout_height="84dp"
-        android:layout_marginBottom="149dp"
+        android:layout_marginTop="34dp"
+        android:layout_marginBottom="84dp"
         android:fontFamily="@font/aclonica"
         android:onClick="logout"
         android:text="Logout"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.537"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

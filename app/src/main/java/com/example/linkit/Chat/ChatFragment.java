@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.View.GONE;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ChatFragment#newInstance} factory method to
@@ -52,9 +55,10 @@ public class ChatFragment extends Fragment {
     private Query query;
 
     SearchView searchView;
-    //ListView listView;
-    //ArrayList<String> list;
-    //ArrayAdapter<String > adapter_2;
+    ListView  listView;
+    ArrayList<String> list;
+    ArrayList<String> list_2;
+    ArrayAdapter <String> adapter_2;
 
 
 
@@ -113,7 +117,7 @@ public class ChatFragment extends Fragment {
         textView = view.findViewById(R.id.emptyChatList);
         progressBar = view.findViewById(R.id.progressBar);
         searchView = (SearchView) view.findViewById(R.id.searchView);
-        //listView = (ListView) view.findViewById(R.id.lv1);
+        listView = (ListView) view.findViewById(R.id.lv1);
 
         chatListModels = new ArrayList<>();
         adapter = new ChatListAdapter(getActivity(), chatListModels);
@@ -163,38 +167,38 @@ public class ChatFragment extends Fragment {
         textView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
 
-
-
-        /*list = new ArrayList<>();
-
-        adapter_2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,list);
+        list = new ArrayList<String>();
+        //list_2 = ChatListAdapter.searchUsername(ChatListAdapter.searchUsername(list));
+        adapter_2 = new ArrayAdapter<String> (getActivity(), android.R.layout.simple_list_item_1, list);
         listView.setAdapter(adapter_2);
+
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
+            public boolean onQueryTextSubmit(String qquery) {
 
-                if(list.contains(query)){
-                    adapter_2.getFilter().filter(query);
-                }else{
-                    Toast.makeText(getActivity(), "No Match found",Toast.LENGTH_LONG).show();
+                if(ChatListAdapter.searchUsername(ChatListAdapter.searchUsername(list)).contains(qquery)){
+                    adapter_2.getFilter().filter(qquery);
+                }
+                else{
+                    Toast.makeText(getActivity(), "No Match found",Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //    adapter.getFilter().filter(newText);
+                adapter_2.getFilter().filter(newText);
                 return false;
             }
-        });*/
+        });
 
     }
 
     private void updateList(DataSnapshot dataSnapshot, boolean ifNew, final String userID)
     {
-        textView.setVisibility(View.GONE);
-        progressBar.setVisibility(View.GONE);
+        textView.setVisibility(GONE);
+        progressBar.setVisibility(GONE);
         final String lastMessage, lastMessageTime, unreadMessageCount;
 
         lastMessage = "";
@@ -225,6 +229,7 @@ public class ChatFragment extends Fragment {
                 Toast.makeText(getActivity(), "Failed to fetch chat list", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     @Override
