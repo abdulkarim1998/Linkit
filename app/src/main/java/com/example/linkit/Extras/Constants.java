@@ -25,4 +25,10 @@ public class Constants {
 
     public static final String KEY = "AAAA6-kYpqg:APA91bEKyrjGMHHApOOYAmB3o6kp8aOyAGuhhEXHE8xuakBJM-7ITm589rJ9wamU3jY1RNLsFDs08SdRdPk2MitNdCsJzAShkTRizKf9gbn8bWBRabWfBMGt307gHzK0EdDK6TPdwQLu";
     public static final String SENDER_ID = "1013228021416";
+
+
+    public static final String NOTIFICATION_CHANNEL_ID = "HelloWorld";
+    public static final String NOTIFICATION_CHANNEL_NAME = "TeamWitcherRegards";
+
+    public static final String NOTIFICATION_CHANNEL_DESC = "HelloFromTeamWitcher";
 }

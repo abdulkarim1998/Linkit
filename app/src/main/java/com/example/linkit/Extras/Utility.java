@@ -111,12 +111,12 @@ public class Utility {
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError {
 
-                            HashMap<String, String> hashMap = new HashMap<>();
+                            Map<String, String> hashMap = new HashMap<>();
                             hashMap.put("Authorization", "key="+ Constants.KEY);
                             hashMap.put("Sender", "id="+ Constants.SENDER_ID);
                             hashMap.put("Content-Type",type);
 
-                            return super.getHeaders();
+                            return hashMap;
 
                         }
                     };
