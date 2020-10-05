@@ -118,7 +118,6 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
 
                                                                 String title = "New Friend Request";
                                                                 String message = currentUser.getDisplayName()+ " accepted your friend request";
-                                                                Utility.sendingNotification(context, title, message, requestModel.getUserID());
 
                                                                 holder.progressBar.setVisibility(View.GONE);
                                                                 holder.declineButton.setVisibility(View.VISIBLE);
@@ -193,7 +192,6 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
 
                                         String title = "New Friend Request";
                                         String message = currentUser.getDisplayName()+ " rejected your friend request";
-                                        Utility.sendingNotification(context, title, message, requestModel.getUserID());
 
                                         holder.progressBar.setVisibility(View.GONE );
                                         holder.declineButton.setVisibility(View.VISIBLE);

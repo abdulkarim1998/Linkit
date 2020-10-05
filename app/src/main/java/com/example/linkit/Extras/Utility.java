@@ -71,7 +71,7 @@ public class Utility {
 
     }
 
-    public static void sendingNotification(final Context context, final String title, final String msg, String uid)
+   /* public static void sendingNotification(final Context context, final String title, final String msg, String uid)
     {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(Node.TOKENS)
                 .child(uid);
@@ -88,8 +88,10 @@ public class Utility {
 
                 try {
 
-                    forNotification.put(Constants.NOTIFICATION_TITLE, title);
-                    forNotification.put(Constants.NOTIFICATION_MESSAGE, msg);
+                    forNotificationData.put(Constants.NOTIFICATION_TITLE, title);
+                    forNotificationData.put(Constants.NOTIFICATION_MESSAGE, msg);
+
+
                     forNotification.put(Constants.NOTIFICATION_TO, token);
                     forNotification.put(Constants.NOTIFICATION_DATA, forNotificationData);
 
@@ -139,5 +141,5 @@ public class Utility {
 
             }
         });
-    }
+    }*/
 }

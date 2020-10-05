@@ -284,7 +284,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                                 title = "Video";
                             }
 
-                            Utility.sendingNotification(ChatActivity.this, title, msg, chatUserID);
                         }
                     }
                 });
