@@ -34,7 +34,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         llMessage = findViewById((R.id.llMessage));
 
     }
-
+    //btn Listener to reset password
     public void btnResetPassword(View view){
       final String email =  emailText.getText().toString().trim();
 

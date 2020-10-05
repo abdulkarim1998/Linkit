@@ -40,6 +40,7 @@ import static android.view.View.GONE;
  * Use the {@link ChatFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+//fragment for chatList
 public class ChatFragment extends Fragment {
 
     private RecyclerView recyclerView;
@@ -108,7 +109,7 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_chat, container, false);
     }
-
+    //will fetch all the friends and make a chatActivity for each one and put them in a chatList
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -194,7 +195,7 @@ public class ChatFragment extends Fragment {
         });
 
     }
-
+    // if the user add new contacts it will added in the chatList
     private void updateList(DataSnapshot dataSnapshot, boolean ifNew, final String userID)
     {
         textView.setVisibility(GONE);

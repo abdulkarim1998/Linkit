@@ -90,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
     }
-
+    //save updates that is done by the user
     public void saveChanges(View view)
     {
         if(etNickName.getText().toString().equals(""))
@@ -109,7 +109,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
     }
-
+    //logout Clicklistner btn
     public void logout(View view)
     {
         FirebaseAuth f = FirebaseAuth.getInstance();
@@ -117,7 +117,7 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
         finish();
     }
-
+    // clickListner if the user wants to either remove photo or change photo
     public void changeProfilePhoto(View view)
     {
         if(serverUri == null)
@@ -150,7 +150,7 @@ public class ProfileActivity extends AppCompatActivity {
             popupMenu.show();
         }
     }
-
+    //helper function for the above function
     private void removeProfilePhoto()
     {
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
@@ -207,7 +207,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
     }
-
+    // helper function
     private void choosePhoto()
     {
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
@@ -223,7 +223,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     }
-
+    // if the user request to choose a photo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -255,7 +255,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
     }
-
+    // to update name and photo
     private void updateNameAndPhoto()
     {
         String filename = firebaseUser.getUid()+ ".jpg";
@@ -331,7 +331,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
-
+    // helper function for the function "saveChanges"
     private void updateName()
     {
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
@@ -391,7 +391,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
     }
-
+    // it will take the user to changePasswordActivity
     public void changePasswordbtn(View view)
     {
         startActivity(new Intent(ProfileActivity.this, ChangePasswordActivity.class));

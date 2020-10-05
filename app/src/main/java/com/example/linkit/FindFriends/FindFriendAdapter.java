@@ -29,7 +29,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
-
+// adapter that connects all the user with the find friend fragment
 public class FindFriendAdapter extends RecyclerView.Adapter<FindFriendAdapter.FindFriendViewHolder> {
 
     private Context context;
@@ -59,6 +59,7 @@ public class FindFriendAdapter extends RecyclerView.Adapter<FindFriendAdapter.Fi
 
         final FindFriendModel f = findFriendModels.get(position);
 
+        // to fetch the user photo
         holder.username.setText(f.getUsername());
         StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images/"+f.getPhotoID());
         storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -75,17 +76,20 @@ public class FindFriendAdapter extends RecyclerView.Adapter<FindFriendAdapter.Fi
         databaseReference = FirebaseDatabase.getInstance().getReference().child(Node.FRIEND_REQUEST);
         user = FirebaseAuth.getInstance().getCurrentUser();
 
+        // to show that the request is sent
         if(f.isRequestStatus())
         {
             holder.sendRequest.setVisibility(View.GONE);
             holder.cancelRequest.setVisibility(View.VISIBLE);
         }
+        // the opposite
         else
         {
             holder.sendRequest.setVisibility(View.VISIBLE);
             holder.cancelRequest.setVisibility(View.GONE);
         }
 
+        // click listener for send request btn
         holder.sendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,6 +149,7 @@ public class FindFriendAdapter extends RecyclerView.Adapter<FindFriendAdapter.Fi
             }
         });
 
+        // cancel btn for send request
         holder.cancelRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

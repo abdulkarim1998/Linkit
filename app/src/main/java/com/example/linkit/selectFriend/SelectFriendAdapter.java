@@ -46,6 +46,7 @@ public class SelectFriendAdapter extends RecyclerView.Adapter<SelectFriendAdapte
 
         StorageReference photoRef = FirebaseStorage.getInstance().getReference().child(Constants.IMAGES_FOLDER+ "/" + selectFriendModel.getPhoto());
 
+        // fetch the photo
         photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -56,7 +57,7 @@ public class SelectFriendAdapter extends RecyclerView.Adapter<SelectFriendAdapte
                         .into(holder.profile);
             }
         });
-
+        
         holder.llSelectFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

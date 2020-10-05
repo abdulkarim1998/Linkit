@@ -1,5 +1,5 @@
 package com.example.linkit.Extras;
-
+// the constant Strings class
 public class Constants {
 
     public static final String IMAGES_FOLDER ="images/";

@@ -115,6 +115,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         rootRef = FirebaseDatabase.getInstance().getReference();
         currentUserID = firebaseAuth.getCurrentUser().getUid();
 
+        // check if the intent has extras
         if(getIntent().hasExtra(Extras.USER_KEY))
         {
             chatUserID = getIntent().getStringExtra(Extras.USER_KEY);
@@ -147,6 +148,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        //set username and user photo in the action bar
         ActionBar actionbar = getSupportActionBar();
         if(actionbar!= null){
             actionbar.setTitle("");
@@ -163,6 +165,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         profilePhoto = findViewById(R.id.profilePhoto);
         tvUserName = (TextView) findViewById(R.id.tvUserName);
 
+        //fetch username + user photo in the action bar
         tvUserName.setText(user_name);
         if(!TextUtils.isEmpty(user_photo)) {
             StorageReference photoRef = FirebaseStorage.getInstance().getReference().child(Constants.IMAGES_FOLDER + "/" + user_photo);
@@ -180,6 +183,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
 
 
+        //show up attachment options
         bottomSheetDialog = new BottomSheetDialog(this);
         View view = getLayoutInflater().inflate(R.layout.send_file_options, null);
         view.findViewById(R.id.llCamera).setOnClickListener(this);
@@ -188,6 +192,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         view.findViewById(R.id.close).setOnClickListener(this);
         bottomSheetDialog.setContentView(view);
 
+        // forward messages
         if(getIntent().hasExtra(Extras.MESSAGE) && getIntent().hasExtra(Extras.MESSAGE_ID) && getIntent().hasExtra(Extras.MESSAGE_TYPE))
         {
             final String messageId = getIntent().getStringExtra(Extras.MESSAGE_ID);
@@ -223,6 +228,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    // send btn
     public void sendMessage(View view)
     {
         if(haveNetworkConnection()) {
@@ -236,7 +242,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
+    // create message and send it to the receiver &generate unique id for each message
     private void createMessage(final String msg, final String msgType, String msgID) {
         try {
             if (!msg.equals("")) {
@@ -289,6 +295,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    // load messages from firebase and put them inside the recycler view
     private void loadMessages()
     {
 
@@ -379,6 +386,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    // back to MainActivity
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
@@ -390,6 +398,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item) ;
     }
 
+    // check network connection
     private boolean haveNetworkConnection() {
         boolean haveConnectedWifi = false;
         boolean haveConnectedMobile = false;
@@ -407,6 +416,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         return haveConnectedWifi || haveConnectedMobile;
     }
 
+    // click listener for each item of attachment menu
     @Override
     public void onClick(View v) {
         switch (v.getId())
@@ -449,6 +459,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    //clear & obvious
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -475,6 +486,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         if(resultCode == RESULT_OK)
         {
+            //if the user want to take a live photo
             if(requestCode == REQUEST_CAPTURE_IMAGE)
             {
                 Bitmap bitmap = (Bitmap) data.getExtras().get("data");
@@ -484,16 +496,19 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
                 uploadBytes(bytes, Constants.MESSAGE_TYPE_IMAGE);
             }
+            //pick a photo from the gallery
             else if (requestCode == REQUEST_PICK_IMAGE)
             {
                 Uri uri = data.getData();
                 uploadFile(uri, Constants.MESSAGE_TYPE_IMAGE);
             }
+            //pick a video from the gallery
             else if (requestCode == REQUEST_PICK_VIDEO)
             {
                 Uri uri = data.getData();
                 uploadFile(uri, Constants.MESSAGE_TYPE_VIDEO);
             }
+            // forward message
             else if(requestCode == REQUEST_FORWARD)
             {
                 Intent intent = new Intent(this, ChatActivity.class);
@@ -512,6 +527,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    // upload file uri
     private void uploadFile(Uri uri, String messageType)
     {
 
@@ -528,6 +544,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    // upload image or video that is taken by camera
     private void uploadBytes(ByteArrayOutputStream bytes, String messageType)
     {
         DatabaseReference databaseReference = rootRef.child(Node.MESSAGES).child(currentUserID).child(chatUserID).push();
@@ -544,6 +561,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
+    // to show the progress bar of the uploading file
     public void uploadProgress(final UploadTask task, final StorageReference ref, final String pushId, final String messageType){
         final View view = getLayoutInflater().inflate(R.layout.file_progress, null);
         final TextView tvFileProgress = view.findViewById(R.id.tvfileProgress);
@@ -553,6 +571,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         ImageView ivCancel = view.findViewById(R.id.cancel);
 
 
+        // to pause the uploading file
         ivPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -561,7 +580,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 ivPause.setVisibility(View.GONE);
             }
         });
-
+        // to resume the uploading file
         ivPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -570,7 +589,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 ivPlay.setVisibility(View.GONE);
             }
         });
-
+        // to cancel the uploading file
         ivCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -579,6 +598,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        // set the view of the progress bar
         fileUploadProgress.addView(view);
         tvFileProgress.setText(getString(R.string.uploading_file, messageType, "0"));
         task.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -592,6 +612,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        // remove the view of the progress bar after complete
         task.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -609,6 +630,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        // if the progress bar failed
         task.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
@@ -618,6 +640,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    // to delete massage from the UI and firebase
     public void deleteMessage(final String messageId, final String messageType)
     {
         Log.i("messageType", messageType);
@@ -683,13 +706,16 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+    // to download file
     public void downloadFile (String messageId, final String messageType, final boolean isForShare){
 
-    if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+    //ask for permission to write on gallery
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
 
         ActivityCompat.requestPermissions(this, new String [] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
     }
 
+        // start downloading the file
     else{
 
         String folderName = messageType.equals(Constants.MESSAGE_TYPE_VIDEO)?Constants.MESSAGE_VIDEO:Constants.MESSAGE_IMAGES;
@@ -701,6 +727,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         final File localFile = new File(localPath);
 
+        // to show the progress bar while downloading the file (same as uploading)
         try {
 
             if (localFile.exists() || localFile.createNewFile()) {
@@ -761,7 +788,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         fileUploadProgress.removeView(view);
 
                         if(task.isSuccessful()) {
-
+                            // show up the apps that can be share with
                             if(isForShare)
                             {
                                 Intent intentForShare = new Intent();
@@ -778,6 +805,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                                 }
                                 startActivity(Intent.createChooser(intentForShare, "share it to ..."));
                             }
+                            // to view the downloaded view
                             else {
 
                                 final Snackbar snackbar = Snackbar.make(fileUploadProgress, "file downloaded successfully", Snackbar.LENGTH_INDEFINITE);
@@ -821,6 +849,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
     }
 
+    // to connect the forward with REQUEST_FORWARD
     public void forwardAMessage(String selectedMessageId, String selectedMessage, String selectedMessageType) {
         Intent intent = new Intent(this, SelectFriendActivity.class);
         intent.putExtra(Extras.MESSAGE, selectedMessage);

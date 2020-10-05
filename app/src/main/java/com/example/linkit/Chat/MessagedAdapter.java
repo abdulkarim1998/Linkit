@@ -28,7 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
+// adapter that connect messages with a chat
 public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.MessageViewHolder> {
 
     private Context context;
@@ -65,6 +65,7 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
         String[] splitted = dateTime.split(" ");
         String trueTime = splitted[1];
 
+        // this statement check if the message sent or received
         if(fromUserID.equals(currentUserID))
         {
             if(messageModel.getMessageType().equals(Constants.MESSAGE_TYPE_TEXT))
@@ -92,6 +93,7 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
         }
         else
         {
+            // this will check if message type text or not
             if(messageModel.getMessageType().equals(Constants.MESSAGE_TYPE_TEXT))
             {
                 holder.llReceived.setVisibility(View.VISIBLE);
@@ -140,7 +142,7 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
             }
         });
 
-
+        // long press will show up action bar menu
         holder.constraintLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -193,7 +195,7 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
 
         }
     }
-
+    // if the user click back btn it will hide the action bar
     public ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
         @Override
         public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
@@ -219,7 +221,7 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
             return false;
 
         }
-
+        //click Listener for every item in the menu
         @Override
         public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
 
@@ -277,7 +279,7 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.Messag
 
             return false;
         }
-
+        // take off the shadow from a selected message
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {
 

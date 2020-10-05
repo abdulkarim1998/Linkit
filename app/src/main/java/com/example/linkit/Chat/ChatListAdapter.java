@@ -25,7 +25,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
-
+// this adaptor connect recycler View of chat fragment with all chats
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder> {
 
     private Context context;
@@ -43,7 +43,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
         View view = LayoutInflater.from(context).inflate(R.layout.chat_list_layout, parent, false);
         return new ChatListViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull final ChatListViewHolder holder, int position) {
         final ChatListModel chatListModel = chatListModels.get(position);
@@ -78,7 +77,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
         }
 
     }
-
+    // to search for a contact
     public static ArrayList<String> searchUsername(ArrayList<String> list){
 
         for(int i = 0; i<listt.size(); i++)

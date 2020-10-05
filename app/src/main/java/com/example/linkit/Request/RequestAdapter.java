@@ -30,7 +30,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
-
+// adapter connect the friends requests that has been sent with the request fragments
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestViewHolder> {
 
     private Context context;
@@ -64,7 +64,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
         storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-
+            // get the photo of the user that send a friend request
                 Glide.with(context)
                         .load(uri)
                         .placeholder(R.drawable.profile)
@@ -78,6 +78,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
         databaseReferenceChat = FirebaseDatabase.getInstance().getReference().child(Node.CHATS);
         final String REQUEST_STATUS = "accepted";
 
+        // click listener for accept btn
         holder.acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,6 +86,14 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                 holder.declineButton.setVisibility(View.GONE);
                 holder.acceptButton.setVisibility(View.GONE);
 
+
+                /*
+                    this accepting btn will add the request sender and the receiver to the firebase
+                    in chats node
+
+                    and add the time stamp
+                    set up the UI at the current user and chat user
+                */
                 databaseReferenceChat.child(currentUser.getUid()).child(requestModel.getUserID()).child(Node.TIME_STAMP)
                         .setValue(ServerValue.TIMESTAMP).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -157,6 +166,11 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
 
             }
         });
+
+                /*
+                    this decline btn will cancel the request sender and the receiver to the firebase
+                    from chats node
+                */
         holder.declineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {

@@ -1,5 +1,5 @@
 package com.example.linkit.Chat;
-
+// model for the message
 public class MessageModel {
     private String from;
     private String message;

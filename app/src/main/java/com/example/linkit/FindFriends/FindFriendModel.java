@@ -1,5 +1,5 @@
 package com.example.linkit.FindFriends;
-
+// model for contacts
 public class FindFriendModel {
 
     private String username;

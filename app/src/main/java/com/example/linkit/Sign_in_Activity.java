@@ -76,7 +76,7 @@ public class Sign_in_Activity extends AppCompatActivity {
 
 
     }
-
+    // if user want to choose a photo for the profile
     public void choosePhoto(View view)
     {
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
@@ -124,7 +124,7 @@ public class Sign_in_Activity extends AppCompatActivity {
             }
         }
     }
-
+    // the user will sign in if the user chose a photo
     private void updateNameAndPhoto()
     {
         String filename = firebaseUser.getUid()+ ".jpg";
@@ -186,7 +186,7 @@ public class Sign_in_Activity extends AppCompatActivity {
             }
         });
     }
-
+    //the user will sign in if the user did not chose a photo
     private void updateName()
     {
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
@@ -232,7 +232,7 @@ public class Sign_in_Activity extends AppCompatActivity {
 
 
 
-
+    //check the user information requirements, then sign in new account
     public void signIn(View view)
     {
         nickName = etNickName.getText().toString().trim();
@@ -291,7 +291,7 @@ public class Sign_in_Activity extends AppCompatActivity {
         }
 
     }
-
+    // generating user codes
     private String generateCode()
     {
         Random random = new Random();

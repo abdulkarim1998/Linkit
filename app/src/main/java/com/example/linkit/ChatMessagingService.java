@@ -20,7 +20,6 @@ import com.example.linkit.Extras.Constants;
 import com.example.linkit.Extras.Utility;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-
 public class ChatMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String s) {

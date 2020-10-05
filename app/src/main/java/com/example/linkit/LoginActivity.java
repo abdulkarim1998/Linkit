@@ -42,7 +42,8 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
 
     }
-
+    //it will take the user email and password
+    //then it will try to login
     public void login(View view)
     {
         String email = etEmail.getText().toString().trim();
@@ -80,14 +81,15 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
     }
-
+    //if the user do not have account
+    //the user will move to sign in activity
     public void goToSignin(View view)
     {
         startActivity(new Intent(LoginActivity.this, Sign_in_Activity.class));
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart() { //if the user already logged in, it will take the user directly to main activity
         super.onStart();
 
         FirebaseAuth f = FirebaseAuth.getInstance();
@@ -108,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Override
+    //quit app
     public void onBackPressed() {
         //super.onBackPressed();
 
@@ -130,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
             }, 2000);
         }
     }
-
+    //take the user to the reset password
     public void resetPasswordClick(View view){
         startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
 

@@ -118,6 +118,7 @@ public class FindFriendsFragment extends Fragment {
         Query query = databaseReference.orderByChild(Node.NICKNAME);
         query.addValueEventListener(new ValueEventListener() {
             @Override
+            // add the new user in the contacts fragment
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 findFriendModels.clear();

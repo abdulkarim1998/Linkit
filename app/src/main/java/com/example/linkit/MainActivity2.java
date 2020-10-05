@@ -37,7 +37,7 @@ public class MainActivity2 extends AppCompatActivity {
 
         makeTabs();
     }
-
+    // connect the fragments with main activity
     class Adapter extends FragmentStateAdapter {
         public Adapter(@NonNull FragmentActivity fragmentActivity) {
             super(fragmentActivity);
@@ -62,14 +62,9 @@ public class MainActivity2 extends AppCompatActivity {
             return 3;
         }
     }
-
+    // to make new taps in the viewPager2
     private void makeTabs()
     {
-        //tabLayout.addTab(tabLayout.newTab().setCustomView(R.layout.tab_chat));
-        //tabLayout.addTab(tabLayout.newTab().setCustomView(R.layout.tab_requests));
-        //tabLayout.addTab(tabLayout.newTab().setCustomView(R.layout.tab_find_friends));
-
-        //tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         Adapter adapter = new Adapter(this);
         viewPager.setAdapter(adapter);
@@ -99,7 +94,7 @@ public class MainActivity2 extends AppCompatActivity {
 
     }
 
-
+    //connecting the mainActivity with the profile
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -107,7 +102,6 @@ public class MainActivity2 extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int choice = item.getItemId();
@@ -119,7 +113,7 @@ public class MainActivity2 extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
+    // quit app
     @Override
     public void onBackPressed() {
         //super.onBackPressed();

@@ -1,5 +1,5 @@
 package com.example.linkit.Extras;
-
+// firebase nodes
 public class Node {
 
     public static final String USERS = "Users";

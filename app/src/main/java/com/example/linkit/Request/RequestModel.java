@@ -1,5 +1,5 @@
 package com.example.linkit.Request;
-
+// the model of the requests
 public class RequestModel {
     private String userID;
     private String username;

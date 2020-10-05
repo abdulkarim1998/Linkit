@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     public void move(View view)
     {
         startActivity(new Intent(MainActivity.this, LoginActivity.class));

@@ -1,5 +1,5 @@
 package com.example.linkit.Chat;
-
+// model for a chat
 public class ChatListModel {
 
     private String userId;

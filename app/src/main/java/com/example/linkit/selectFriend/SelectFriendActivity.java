@@ -47,7 +47,7 @@ public class SelectFriendActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_friend);
 
-
+        // check if the intent has extras
         if(getIntent().hasExtra(Extras.MESSAGE))
         {
             selectedMessage = getIntent().getStringExtra(Extras.MESSAGE);
@@ -70,7 +70,8 @@ public class SelectFriendActivity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         databaseReferenceUsers = FirebaseDatabase.getInstance().getReference().child(Node.USERS);
         databaseReferenceChats = FirebaseDatabase.getInstance().getReference().child(Node.CHATS).child(user.getUid());
-
+        //this value eventListener will fetch all the friends
+        //so that the user can chose one of them to foreword the message
         valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -104,10 +105,10 @@ public class SelectFriendActivity extends AppCompatActivity {
                 Toast.makeText(SelectFriendActivity.this, "failed to fetch friends", Toast.LENGTH_SHORT).show();
             }
         };
-
+        // assigned value eventListener to database reference
         databaseReferenceChats.addValueEventListener(valueEventListener);
     }
-
+    // this method will send the information of the chosen user
     public void selectedFriendReturned(String userID, String username, String photo)
     {
         databaseReferenceChats.removeEventListener(valueEventListener);

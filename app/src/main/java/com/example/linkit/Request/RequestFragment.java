@@ -32,6 +32,7 @@ import java.util.List;
  * Use the {@link RequestFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+// connect request fragments with request tap
 public class RequestFragment extends Fragment {
 
     private RecyclerView recyclerView;
@@ -90,7 +91,6 @@ public class RequestFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_request, container, false);
     }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -113,7 +113,11 @@ public class RequestFragment extends Fragment {
         textView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
 
+        /*
+        set up the view of the requests
 
+        on change listener of the request
+         */
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

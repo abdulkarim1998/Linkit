@@ -1,5 +1,5 @@
 package com.example.linkit.Extras;
-
+//extras Strings for intent
 public class Extras {
 
     public static final String USER_KEY = "user key";

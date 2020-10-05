@@ -1,5 +1,5 @@
 package com.example.linkit.selectFriend;
-
+// model for selected friend
 public class SelectFriendModel {
 
     private String userID;
