@@ -78,11 +78,11 @@ public class Utility {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String token ="";
                 if(snapshot.child(Node.DEVICE_TOKEN).getValue() != null)
                 {
-
+                    token = snapshot.child(Node.DEVICE_TOKEN).getValue().toString();
                 }
-                String token = snapshot.child(Node.DEVICE_TOKEN).getValue().toString();
                 JSONObject forNotification = new JSONObject();
                 JSONObject forNotificationData = new JSONObject();
 
